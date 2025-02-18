@@ -4,6 +4,7 @@ class DeadlineTracker {
         this.filterManager = new FilterManager();
         this.tagManager = new TagManager();
         this.calendarManager = new CalendarManager(this.deadlineManager);
+        this.planningManager = new PlanningManager(this.deadlineManager);
         this.isAdminMode = localStorage.getItem('adminMode') === 'true';
         this.initializeAdminMode();
     }
@@ -195,6 +196,7 @@ class DeadlineTracker {
         });
 
         this.calendarManager.updateCalendar();
+        this.planningManager.updatePlanDisplay();
     }
 
     handleAddDeadline() {

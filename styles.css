@@ -1004,6 +1004,151 @@ body.admin-mode #toggleAdminMode {
     color: white;
 }
 
+/* Planning styles */
+.planning-container {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.planning-header {
+    margin-bottom: 1rem;
+}
+
+.planning-header h3 {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.planning-day {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.planning-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.day-date {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.day-hours {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.planning-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.planning-task {
+    padding: 0.8rem;
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--primary-color);
+}
+
+.planning-task.high {
+    border-left-color: var(--danger-color);
+}
+
+.planning-task.medium {
+    border-left-color: var(--warning-color);
+}
+
+.planning-task.low {
+    border-left-color: var(--accent-color);
+}
+
+.task-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.task-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.task-hours {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Planning warning styles */
+.planning-warnings {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.warning-header {
+    color: #856404;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.warning-header i {
+    color: #f1c40f;
+}
+
+.warning-item {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.5rem;
+}
+
+.warning-title {
+    font-weight: 500;
+    color: #856404;
+    margin-bottom: 0.3rem;
+}
+
+.warning-details {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.daily-constraints {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--secondary-color);
+    border-radius: var(--border-radius);
+}
+
+.day-constraint {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: white;
+    border-radius: 12px;
+    margin: 0.2rem;
+    font-size: 0.8rem;
+    box-shadow: var(--shadow);
+}
+
 @media (max-width: 768px) {
     .dashboard {
         grid-template-columns: 1fr;
