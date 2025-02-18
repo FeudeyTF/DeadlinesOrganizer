@@ -74,7 +74,7 @@ class DeadlineTracker {
     initializeFilterToggle() {
         const toggleBtn = document.getElementById('toggleFilters');
         const filterControls = document.getElementById('filterControls');
-        
+
         toggleBtn.addEventListener('click', () => {
             filterControls.classList.toggle('collapsed');
             // Save filter state preference
@@ -90,16 +90,14 @@ class DeadlineTracker {
 
     showModal(modal) {
         modal.style.display = 'flex';
-        modal.offsetHeight; // Trigger reflow
+        modal.offsetHeight;
         modal.classList.add('active');
-        // Don't add modal-open class anymore
     }
 
     hideModal(modal) {
         modal.classList.remove('active');
         setTimeout(() => {
             modal.style.display = 'none';
-            // Reset calendar day states
             document.querySelectorAll('.calendar-day').forEach(day => {
                 day.classList.remove('active');
             });
@@ -119,8 +117,7 @@ class DeadlineTracker {
         this.deadlines.push(deadline);
         this.saveDeadlines();
         this.updateUI();
-        
-        // Reset and close modal
+
         document.getElementById('deadlineForm').reset();
         this.hideModal(document.getElementById('deadlineModal'));
     }
@@ -135,14 +132,14 @@ class DeadlineTracker {
         const due = new Date(dueDate);
         const created = new Date(due);
         created.setDate(created.getDate() - 14); // Assuming 2 weeks standard duration
-        
+
         const total = due - created;
         const elapsed = now - created;
         const progress = Math.min(Math.max((elapsed / total) * 100, 0), 100);
-        
-        const progressClass = progress >= 75 ? 'critical' : 
-                             progress >= 40 ? 'warning' : 'safe';
-        
+
+        const progressClass = progress >= 75 ? 'critical' :
+            progress >= 40 ? 'warning' : 'safe';
+
         return { progress, progressClass };
     }
 
@@ -162,13 +159,12 @@ class DeadlineTracker {
         return deadlines.sort((a, b) => {
             const dateA = new Date(a.dueDate);
             const dateB = new Date(b.dueDate);
-            
+
             // Calculate urgency based on remaining time
             const nowTime = new Date().getTime();
             const urgencyA = dateA.getTime() - nowTime;
             const urgencyB = dateB.getTime() - nowTime;
-            
-            // Sort by urgency (closest deadline first)
+
             return urgencyA - urgencyB;
         });
     }
@@ -226,7 +222,7 @@ class DeadlineTracker {
             const fullDateTime = this.formatDateTime(deadline.dueDate);
             const card = document.createElement('div');
             card.className = `deadline-card ${deadline.priority}`;
-            
+
             card.innerHTML = `
                 <div class="deadline-info">
                     <div class="deadline-title-group">
@@ -264,12 +260,12 @@ class DeadlineTracker {
         const prevMonth = document.getElementById('prevMonth');
         const nextMonth = document.getElementById('nextMonth');
         const todayBtn = document.getElementById('todayBtn');
-        
+
         prevMonth.addEventListener('click', () => {
             this.currentDate.setMonth(this.currentDate.getMonth() - 1);
             this.updateCalendar();
         });
-        
+
         nextMonth.addEventListener('click', () => {
             this.currentDate.setMonth(this.currentDate.getMonth() + 1);
             this.updateCalendar();
@@ -279,39 +275,39 @@ class DeadlineTracker {
             this.currentDate = new Date();
             this.updateCalendar();
         });
-        
+
         this.updateCalendar();
     }
 
     updateCalendar() {
         const year = this.currentDate.getFullYear();
         const month = this.currentDate.getMonth();
-        
+
         // Update month/year display
-        document.getElementById('currentMonth').textContent = 
+        document.getElementById('currentMonth').textContent =
             new Date(year, month).toLocaleDateString('default', { month: 'long', year: 'numeric' });
-        
+
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
         const startDay = firstDay.getDay();
-        
+
         const calendarDays = document.getElementById('calendarDays');
         calendarDays.innerHTML = '';
-        
+
         // Previous month days
         const prevMonthLastDay = new Date(year, month, 0).getDate();
         for (let i = startDay - 1; i >= 0; i--) {
             this.createCalendarDay(calendarDays, prevMonthLastDay - i, true);
         }
-        
+
         // Current month days
         for (let i = 1; i <= daysInMonth; i++) {
             const date = new Date(year, month, i);
             const deadlines = this.getDeadlinesForDate(date);
             this.createCalendarDay(calendarDays, i, false, deadlines, date);
         }
-        
+
         // Next month days
         const remainingDays = 42 - (startDay + daysInMonth); // 42 = 6 rows × 7 days
         for (let i = 1; i <= remainingDays; i++) {
@@ -322,7 +318,7 @@ class DeadlineTracker {
     createCalendarDay(container, dayNumber, isOtherMonth, deadlines = [], date = null) {
         const day = document.createElement('div');
         day.className = 'calendar-day' + (isOtherMonth ? ' other-month' : '');
-        
+
         if (date && this.isToday(date)) {
             day.classList.add('today');
         }
@@ -349,10 +345,10 @@ class DeadlineTracker {
                         <div class="deadline-popup-item ${d.priority}" data-id="${d.id}">
                             <div class="deadline-popup-title">${d.courseName}: ${d.taskName}</div>
                             <div class="deadline-popup-time">
-                                ${new Date(d.dueDate).toLocaleTimeString([], { 
-                                    hour: '2-digit', 
-                                    minute: '2-digit'
-                                })}
+                                ${new Date(d.dueDate).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        })}
                             </div>
                         </div>
                     `).join('')}
@@ -362,8 +358,8 @@ class DeadlineTracker {
 
         // Handle click events for dots and popup items
         if (deadlines.length > 0) {
-            [...content.querySelectorAll('.priority-dot:not(.more)'), 
-             ...content.querySelectorAll('.deadline-popup-item')].forEach(item => {
+            [...content.querySelectorAll('.priority-dot:not(.more)'),
+            ...content.querySelectorAll('.deadline-popup-item')].forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const deadlineId = parseInt(item.dataset.id);
@@ -384,16 +380,16 @@ class DeadlineTracker {
         return this.deadlines.filter(deadline => {
             const deadlineDate = new Date(deadline.dueDate);
             return deadlineDate.getDate() === date.getDate() &&
-                   deadlineDate.getMonth() === date.getMonth() &&
-                   deadlineDate.getFullYear() === date.getFullYear();
+                deadlineDate.getMonth() === date.getMonth() &&
+                deadlineDate.getFullYear() === date.getFullYear();
         });
     }
 
     isToday(date) {
         const today = new Date();
         return date.getDate() === today.getDate() &&
-               date.getMonth() === today.getMonth() &&
-               date.getFullYear() === today.getFullYear();
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear();
     }
 
     calculateTimeRemaining(dueDate) {
@@ -451,7 +447,7 @@ class DeadlineTracker {
     updateDeadline() {
         const id = parseInt(document.getElementById('editDeadlineId').value);
         const index = this.deadlines.findIndex(d => d.id === id);
-        
+
         if (index === -1) return;
 
         this.deadlines[index] = {
