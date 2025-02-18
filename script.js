@@ -7,6 +7,7 @@ class DeadlineTracker {
         this.planningManager = new PlanningManager(this.deadlineManager);
         this.isAdminMode = localStorage.getItem('adminMode') === 'true';
         this.initializeAdminMode();
+        this.notificationManager = new NotificationManager();
     }
 
     initialize() {
@@ -220,6 +221,7 @@ class DeadlineTracker {
             tag.classList.remove('selected');
         });
 
+        this.notificationManager.success('Deadline added successfully');
         this.updateUI();
     }
 
@@ -249,12 +251,14 @@ class DeadlineTracker {
 
         this.deadlineManager.updateDeadline(id, updatedDeadline);
         UIManager.hideModal(document.getElementById('editModal'));
+        this.notificationManager.success('Deadline updated successfully');
         this.updateUI();
     }
 
     handleDeleteClick(id) {
         if (confirm('Are you sure you want to delete this deadline?')) {
             this.deadlineManager.deleteDeadline(id);
+            this.notificationManager.warning('Deadline deleted');
             this.updateUI();
         }
     }
