@@ -204,12 +204,18 @@ class PlanningManager {
 
         planContainer.innerHTML = html;
 
+        // Update the toggle button and bind event handler
         const viewToggle = document.getElementById('planViewToggle');
         if (viewToggle) {
-            const toggleHandler = () => this.toggleView();
-            viewToggle.removeEventListener('click', toggleHandler);
-            viewToggle.addEventListener('click', toggleHandler);
-            viewToggle.innerHTML = `<i class="fas fa-${viewMode === 'list' ? 'route' : 'list'}"></i>`;
+            // Remove old event listeners if any exist
+            const newToggle = viewToggle.cloneNode(true);
+            viewToggle.parentNode.replaceChild(newToggle, viewToggle);
+            
+            // Add new event listener
+            newToggle.addEventListener('click', () => this.toggleView());
+            
+            // Update icon
+            newToggle.innerHTML = `<i class="fas fa-${viewMode === 'list' ? 'route' : 'list'}"></i>`;
         }
     }
 
@@ -320,8 +326,10 @@ class PlanningManager {
         const roadmapView = document.querySelector('.roadmap-view');
         const viewToggle = document.getElementById('planViewToggle');
 
-        listView.classList.toggle('active');
-        roadmapView.classList.toggle('active');
+        if (listView)
+            listView.classList.toggle('active');
+        if (roadmapView)
+            roadmapView.classList.toggle('active');
 
         if (viewToggle) {
             viewToggle.innerHTML = `<i class="fas fa-${newView === 'list' ? 'route' : 'list'}"></i>`;
