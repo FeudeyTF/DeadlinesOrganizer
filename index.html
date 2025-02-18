@@ -15,7 +15,10 @@
     <div class="container">
         <header>
             <h1>Course Deadline Tracker</h1>
-            <button id="addDeadlineBtn" class="btn-primary">Add New Deadline</button>
+            <div class="header-buttons">
+                <button id="addDeadlineBtn" class="btn-primary">Add New Deadline</button>
+                <button id="manageTagsBtn" class="btn-secondary">Manage Tags</button>
+            </div>
         </header>
 
         <div class="dashboard">
@@ -70,6 +73,19 @@
                         <label for="searchFilter">Search:</label>
                         <input type="text" id="searchFilter" placeholder="Search courses...">
                     </div>
+                    <div class="filter-group filter-group-tags">
+                        <label>Filter by Tags:</label>
+                        <div class="tags-select" id="filterTags"></div>
+                        <div class="tag-filter-mode">
+                            <div class="toggle-group">
+                                <input type="radio" id="filterModeAny" name="tagFilterMode" value="any" checked>
+                                <input type="radio" id="filterModeAll" name="tagFilterMode" value="all">
+                                <label for="filterModeAny" class="toggle-option">Match Any</label>
+                                <label for="filterModeAll" class="toggle-option">Match All</label>
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="deadlinesList" class="deadlines-list"></div>
             </div>
@@ -100,6 +116,10 @@
                             <option value="medium">Medium</option>
                             <option value="low">Low</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deadlineTags">Tags:</label>
+                        <div class="tags-select" id="deadlineTags"></div>
                     </div>
                     <button type="submit" class="btn-primary">Save Deadline</button>
                 </form>
@@ -133,7 +153,30 @@
                             <option value="low">Low</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="editDeadlineTags">Tags:</label>
+                        <div class="tags-select" id="editDeadlineTags"></div>
+                    </div>
                     <button type="submit" class="btn-primary">Update Deadline</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tags Modal -->
+        <div id="tagsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Manage Tags</h2>
+                <div class="tags-list" id="tagsList"></div>
+                <form id="tagForm" class="tag-form">
+                    <div class="tag-form-container">
+                        <input type="text" id="tagName" required placeholder="Enter tag name">
+                        <div class="color-picker-wrapper">
+                            <div class="color-preview" id="colorPreview"></div>
+                            <input type="color" id="tagColor" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Tag</button>
                 </form>
             </div>
         </div>

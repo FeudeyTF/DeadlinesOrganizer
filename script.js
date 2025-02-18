@@ -5,15 +5,21 @@ class DeadlineTracker {
         this.filters = {
             priority: 'all',
             status: 'all',
-            search: ''
+            search: '',
+            tags: [],
+            tagMode: 'any'
         };
         this.currentDate = new Date();
+        this.tags = JSON.parse(localStorage.getItem('tags')) || [];
         this.initializeEventListeners();
         this.initializeEditModal();
         this.initializeFilters();
         this.initializeFilterToggle();
         this.initializeCalendar();
+        this.initializeTagsModal();
         this.updateUI();
+        this.initializeDeadlineTagsSelection();
+        this.initializeTagFilters();
     }
 
     initializeEventListeners() {
@@ -88,6 +94,36 @@ class DeadlineTracker {
         }
     }
 
+    initializeTagsModal() {
+        const modal = document.getElementById('tagsModal');
+        const manageTagsBtn = document.getElementById('manageTagsBtn');
+        const closeBtn = modal.querySelector('.close');
+        const form = document.getElementById('tagForm');
+        const colorInput = document.getElementById('tagColor');
+        const colorPreview = document.getElementById('colorPreview');
+
+        // Initialize color picker
+        colorInput.value = '#4a90e2';
+        colorPreview.style.backgroundColor = colorInput.value;
+
+        colorInput.addEventListener('input', (e) => {
+            colorPreview.style.backgroundColor = e.target.value;
+        });
+
+        manageTagsBtn.onclick = () => this.showModal(modal);
+        closeBtn.onclick = () => this.hideModal(modal);
+        window.onclick = (e) => {
+            if (e.target === modal) this.hideModal(modal);
+        }
+
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            this.addTag();
+        }
+
+        this.updateTagsList();
+    }
+
     showModal(modal) {
         modal.style.display = 'flex';
         modal.offsetHeight;
@@ -111,7 +147,8 @@ class DeadlineTracker {
             taskName: document.getElementById('taskName').value,
             dueDate: new Date(document.getElementById('dueDate').value),
             priority: document.getElementById('priority').value,
-            createdAt: new Date()
+            createdAt: new Date(),
+            tagIds: this.getSelectedTags('deadlineTags')
         };
 
         this.deadlines.push(deadline);
@@ -119,6 +156,7 @@ class DeadlineTracker {
         this.updateUI();
 
         document.getElementById('deadlineForm').reset();
+        this.updateTagsSelect('deadlineTags'); // Reset tags selection
         this.hideModal(document.getElementById('deadlineModal'));
     }
 
@@ -171,12 +209,11 @@ class DeadlineTracker {
 
     applyFilters(deadlines) {
         return deadlines.filter(deadline => {
-            // Priority filter
+            // Existing filters
             if (this.filters.priority !== 'all' && deadline.priority !== this.filters.priority) {
                 return false;
             }
 
-            // Status filter
             if (this.filters.status !== 'all') {
                 const progress = deadline.progress;
                 switch (this.filters.status) {
@@ -192,11 +229,22 @@ class DeadlineTracker {
                 }
             }
 
-            // Search filter
             if (this.filters.search) {
                 const searchText = `${deadline.courseName} ${deadline.taskName}`.toLowerCase();
                 if (!searchText.includes(this.filters.search)) {
                     return false;
+                }
+            }
+
+            // Tag filtering
+            if (this.filters.tags.length > 0) {
+                const deadlineTags = deadline.tagIds || [];
+                if (this.filters.tagMode === 'all') {
+                    // All selected tags must be present
+                    return this.filters.tags.every(tagId => deadlineTags.includes(tagId));
+                } else {
+                    // At least one selected tag must be present
+                    return this.filters.tags.some(tagId => deadlineTags.includes(tagId));
                 }
             }
 
@@ -222,6 +270,7 @@ class DeadlineTracker {
             const fullDateTime = this.formatDateTime(deadline.dueDate);
             const card = document.createElement('div');
             card.className = `deadline-card ${deadline.priority}`;
+            const tagsHtml = this.getDeadlineTagsHtml(deadline);
 
             card.innerHTML = `
                 <div class="deadline-info">
@@ -241,6 +290,7 @@ class DeadlineTracker {
                     </div>
                 </div>
                 <div class="time-remaining">${timeRemaining}</div>
+                ${tagsHtml}
                 <div class="progress-bar">
                     <div class="progress-bar-fill ${progressClass}" style="width: ${progress}%"></div>
                 </div>
@@ -251,6 +301,42 @@ class DeadlineTracker {
 
             editBtn.onclick = () => this.editDeadline(deadline.id);
             deleteBtn.onclick = () => this.deleteDeadline(deadline.id);
+
+            const tagElements = card.querySelectorAll('.deadline-tag');
+            tagElements.forEach(tagElement => {
+                tagElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const tagColor = tagElement.style.backgroundColor;
+                    const tagName = tagElement.textContent.trim();
+                    const clickedTag = this.tags.find(t =>
+                        t.color === tagColor &&
+                        t.name === tagName
+                    );
+
+                    if (clickedTag) {
+                        // Show filters if they're hidden
+                        document.getElementById('filterControls').classList.remove('collapsed');
+
+                        // Clear existing tag filters
+                        document.querySelectorAll('#filterTags .tag-select-item').forEach(tag => {
+                            tag.classList.remove('selected');
+                        });
+
+                        // Select the clicked tag
+                        const filterTag = document.querySelector(`#filterTags [data-tag-id="${clickedTag.id}"]`);
+                        if (filterTag) {
+                            filterTag.classList.add('selected');
+                            this.filters.tags = [clickedTag.id];
+                            this.filters.tagMode = 'any';
+
+                            // Update radio button
+                            document.querySelector('input[name="tagFilterMode"][value="any"]').checked = true;
+
+                            this.updateUI();
+                        }
+                    }
+                });
+            });
 
             deadlinesList.appendChild(card);
         });
@@ -440,6 +526,15 @@ class DeadlineTracker {
         document.getElementById('editDueDate').value = new Date(deadline.dueDate).toISOString().slice(0, 16);
         document.getElementById('editPriority').value = deadline.priority;
 
+        // Set selected tags
+        const tagContainer = document.getElementById('editDeadlineTags');
+        tagContainer.querySelectorAll('.tag-select-item').forEach(tagElement => {
+            const tagId = parseInt(tagElement.getAttribute('data-tag-id'));
+            if (deadline.tagIds && deadline.tagIds.includes(tagId)) {
+                tagElement.classList.add('selected');
+            }
+        });
+
         const editModal = document.getElementById('editModal');
         this.showModal(editModal);
     }
@@ -455,7 +550,8 @@ class DeadlineTracker {
             courseName: document.getElementById('editCourseName').value,
             taskName: document.getElementById('editTaskName').value,
             dueDate: new Date(document.getElementById('editDueDate').value),
-            priority: document.getElementById('editPriority').value
+            priority: document.getElementById('editPriority').value,
+            tagIds: this.getSelectedTags('editDeadlineTags')
         };
 
         this.saveDeadlines();
@@ -469,6 +565,147 @@ class DeadlineTracker {
             this.saveDeadlines();
             this.updateUI();
         }
+    }
+
+    addTag() {
+        const name = document.getElementById('tagName').value;
+        const color = document.getElementById('tagColor').value;
+
+        const tag = {
+            id: Date.now(),
+            name,
+            color
+        };
+
+        this.tags.push(tag);
+        this.saveTags();
+        this.updateTagsList();
+        document.getElementById('tagForm').reset();
+    }
+
+    deleteTag(id) {
+        // Remove tag from tags list
+        this.tags = this.tags.filter(tag => tag.id !== id);
+
+        // Remove deleted tag from all deadlines
+        this.deadlines = this.deadlines.map(deadline => ({
+            ...deadline,
+            tagIds: deadline.tagIds ? deadline.tagIds.filter(tagId => tagId !== id) : []
+        }));
+
+        // Save both tags and deadlines
+        this.saveTags();
+        this.saveDeadlines();
+
+        this.filters.tags = this.filters.tags.filter(tagId => tagId !== id);
+
+        // Update UI
+        this.updateTagsList();
+        this.updateUI();
+    }
+
+    updateTagsList() {
+        const tagsList = document.getElementById('tagsList');
+        tagsList.innerHTML = '';
+
+        this.tags.forEach(tag => {
+            const tagElement = document.createElement('div');
+            tagElement.className = 'tag-item';
+            tagElement.style.backgroundColor = tag.color;
+
+            tagElement.innerHTML = `
+                ${tag.name}
+                <button class="delete-tag" data-id="${tag.id}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            const deleteBtn = tagElement.querySelector('.delete-tag');
+            deleteBtn.onclick = () => this.deleteTag(tag.id);
+
+            tagsList.appendChild(tagElement);
+        });
+
+        this.updateTagsSelect('deadlineTags');
+        this.updateTagsSelect('editDeadlineTags');
+    }
+
+    saveTags() {
+        localStorage.setItem('tags', JSON.stringify(this.tags));
+    }
+
+    initializeDeadlineTagsSelection() {
+        this.updateTagsSelect('deadlineTags');
+        this.updateTagsSelect('editDeadlineTags');
+    }
+
+    updateTagsSelect(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '';
+        this.tags.forEach(tag => {
+            const tagElement = document.createElement('div');
+            tagElement.className = 'tag-select-item';
+            tagElement.setAttribute('data-tag-id', tag.id);
+            tagElement.style.backgroundColor = tag.color;
+            tagElement.textContent = tag.name;
+
+            if (containerId === 'filterTags') {
+                tagElement.addEventListener('click', () => {
+                    tagElement.classList.toggle('selected');
+                    this.filters.tags = this.getSelectedTags('filterTags');
+                    this.updateUI();
+                });
+            } else {
+                tagElement.addEventListener('click', () => {
+                    tagElement.classList.toggle('selected');
+                });
+            }
+
+            container.appendChild(tagElement);
+        });
+    }
+
+    getSelectedTags(containerId) {
+        const container = document.getElementById(containerId);
+        const selectedTags = container.querySelectorAll('.tag-select-item.selected');
+        return Array.from(selectedTags).map(tag => parseInt(tag.getAttribute('data-tag-id')));
+    }
+
+    getDeadlineTagsHtml(deadline) {
+        if (!deadline.tagIds || deadline.tagIds.length === 0) return '';
+
+        const tags = deadline.tagIds
+            .map(tagId => this.tags.find(t => t.id === tagId))
+            .filter(tag => tag);
+
+        if (tags.length === 0) return '';
+
+        return `
+            <div class="deadline-tags">
+                ${tags.map(tag => `
+                    <span class="deadline-tag" style="background-color: ${tag.color}">
+                        ${tag.name}
+                    </span>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    initializeTagFilters() {
+        const radioButtons = document.getElementsByName('tagFilterMode');
+
+        // Initialize tag selection
+        this.updateTagsSelect('filterTags');
+
+        // Add change handlers for radio buttons
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', () => {
+                this.filters.tagMode = radio.value;
+                this.updateUI();
+            });
+        });
     }
 }
 
