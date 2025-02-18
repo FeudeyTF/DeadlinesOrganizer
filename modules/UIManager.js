@@ -107,6 +107,7 @@ class UIManager {
         card.className = `deadline-card ${deadline.priority}${isPast ? ' past' : ''}`;
 
         const tagsHtml = this.getDeadlineTagsHtml(deadline, tagManager);
+        const timeToDoHtml = deadline.timeToDo ? `<div class="time-to-do">Estimated time: ${deadline.timeToDo} hours</div>` : '';
 
         card.innerHTML = `
             <div class="deadline-info">
@@ -125,6 +126,7 @@ class UIManager {
                     ${new Date(deadline.dueDate).toLocaleDateString()}
                 </div>
             </div>
+            ${timeToDoHtml}
             <div class="time-remaining">${timeRemaining}</div>
             ${tagsHtml}
             ${!isPast ? `<div class="progress-bar">
@@ -160,6 +162,7 @@ class UIManager {
         document.getElementById('editCourseName').value = deadline.courseName;
         document.getElementById('editTaskName').value = deadline.taskName;
         document.getElementById('editDueDate').value = new Date(deadline.dueDate).toISOString().slice(0, 16);
+        document.getElementById('editTimeToDo').value = deadline.timeToDo || '';
         document.getElementById('editPriority').value = deadline.priority;
 
         document.querySelectorAll('#editDeadlineTags .tag-select-item').forEach(tagElement => {

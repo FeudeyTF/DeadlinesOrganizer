@@ -1,6 +1,21 @@
 class DeadlineManager {
     constructor() {
         this.deadlines = JSON.parse(localStorage.getItem('deadlines')) || [];
+        this.migrateDeadlines();
+    }
+
+    migrateDeadlines() {
+        let needsSave = false;
+        this.deadlines = this.deadlines.map(deadline => {
+            if (typeof deadline.timeToDo === 'undefined') {
+                needsSave = true;
+                return { ...deadline, timeToDo: 1 }; // Default 1 hour
+            }
+            return deadline;
+        });
+        if (needsSave) {
+            this.saveDeadlines();
+        }
     }
 
     addDeadline(deadline) {

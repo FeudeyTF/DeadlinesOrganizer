@@ -205,6 +205,7 @@ class DeadlineTracker {
             courseName: document.getElementById('courseName').value,
             taskName: document.getElementById('taskName').value,
             dueDate: new Date(document.getElementById('dueDate').value),
+            timeToDo: parseFloat(document.getElementById('timeToDo').value),
             priority: document.getElementById('priority').value,
             tagIds: tagIds
         };
@@ -239,6 +240,7 @@ class DeadlineTracker {
             courseName: document.getElementById('editCourseName').value,
             taskName: document.getElementById('editTaskName').value,
             dueDate: new Date(document.getElementById('editDueDate').value),
+            timeToDo: parseFloat(document.getElementById('editTimeToDo').value),
             priority: document.getElementById('editPriority').value,
             tagIds: tagIds
         };
