@@ -62,6 +62,30 @@ class UIManager {
         });
     }
 
+    static updatePastDeadlinesList(deadlines, tagManager, handlers) {
+        const pastDeadlinesList = document.getElementById('pastDeadlinesList');
+        if (!pastDeadlinesList) return;
+
+        pastDeadlinesList.innerHTML = '';
+
+        if (deadlines.length === 0) {
+            pastDeadlinesList.innerHTML = '<div class="no-results">No past deadlines</div>';
+            return;
+        }
+
+        deadlines.forEach(deadline => {
+            const timeRemaining = this.calculateTimeRemaining(deadline.dueDate);
+            const { progress, progressClass } = this.calculateProgress(deadline.dueDate);
+            const fullDateTime = this.formatDateTime(deadline.dueDate);
+            const card = this.createDeadlineCard(deadline, timeRemaining, progress, progressClass, fullDateTime, tagManager, true);
+
+            card.querySelector('.btn-edit').onclick = () => handlers.onEdit(deadline.id);
+            card.querySelector('.btn-delete').onclick = () => handlers.onDelete(deadline.id);
+
+            pastDeadlinesList.appendChild(card);
+        });
+    }
+
     static calculateProgress(dueDate) {
         const now = new Date();
         const due = new Date(dueDate);
@@ -78,9 +102,9 @@ class UIManager {
         return { progress, progressClass };
     }
 
-    static createDeadlineCard(deadline, timeRemaining, progress, progressClass, fullDateTime, tagManager) {
+    static createDeadlineCard(deadline, timeRemaining, progress, progressClass, fullDateTime, tagManager, isPast = false) {
         const card = document.createElement('div');
-        card.className = `deadline-card ${deadline.priority}`;
+        card.className = `deadline-card ${deadline.priority}${isPast ? ' past' : ''}`;
 
         const tagsHtml = this.getDeadlineTagsHtml(deadline, tagManager);
 
@@ -103,9 +127,9 @@ class UIManager {
             </div>
             <div class="time-remaining">${timeRemaining}</div>
             ${tagsHtml}
-            <div class="progress-bar">
+            ${!isPast ? `<div class="progress-bar">
                 <div class="progress-bar-fill ${progressClass}" style="width: ${progress}%"></div>
-            </div>
+            </div>` : ''}
         `;
 
         return card;

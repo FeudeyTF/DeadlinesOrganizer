@@ -9,6 +9,7 @@ class DeadlineTracker {
     initialize() {
         this.initializeEventListeners();
         this.initializeModals();
+        this.calendarManager.updateCalendar(); // Call this first
         this.updateUI();
         this.initializeCalendarEvents();
         this.initializeFilterEvents();
@@ -86,15 +87,11 @@ class DeadlineTracker {
             const color = document.getElementById('tagColor').value;
 
             this.tagManager.addTag(name, color);
-            this.initializeTagFilters(); // Refresh tag filters
+            this.initializeTagFilters();
 
-            // Reset form
             tagForm.reset();
             document.getElementById('colorPreview').style.backgroundColor = '#4a90e2';
             document.getElementById('tagColor').value = '#4a90e2';
-
-            // Close modal if needed
-            // UIManager.hideModal(document.getElementById('tagsModal')); // Uncomment if you want to close modal after creation
         });
 
         // Initialize color picker preview
@@ -113,10 +110,8 @@ class DeadlineTracker {
         if (!filterTags)
             return;
 
-        // Clear existing content
         filterTags.innerHTML = '';
 
-        // Add tag options
         this.tagManager.tags.forEach(tag => {
             const tagElement = document.createElement('div');
             tagElement.className = 'tag-select-item';
@@ -165,13 +160,24 @@ class DeadlineTracker {
     }
 
     updateUI() {
-        const filteredDeadlines = this.filterManager.applyFilters(
-            this.deadlineManager.sortDeadlines()
-        );
+        const now = new Date();
+        const allDeadlines = this.deadlineManager.sortDeadlines();
+        
+        const pastDeadlines = allDeadlines.filter(d => new Date(d.dueDate) < now);
+        const activeDeadlines = allDeadlines.filter(d => new Date(d.dueDate) >= now);
+
+        const filteredDeadlines = this.filterManager.applyFilters(activeDeadlines);
+        
         UIManager.updateDeadlinesList(filteredDeadlines, this.tagManager, {
             onEdit: (id) => this.handleEditClick(id),
             onDelete: (id) => this.handleDeleteClick(id)
         });
+
+        UIManager.updatePastDeadlinesList(pastDeadlines, this.tagManager, {
+            onEdit: (id) => this.handleEditClick(id),
+            onDelete: (id) => this.handleDeleteClick(id)
+        });
+
         this.calendarManager.updateCalendar();
     }
 
