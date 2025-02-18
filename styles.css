@@ -1,0 +1,712 @@
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f5f6fa;
+    --accent-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --text-color: #2c3e50;
+    --border-radius: 8px;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #357abd;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.dashboard-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: visible;
+}
+
+.dashboard-item h2 {
+    margin: -0.5rem 0 1rem 0;  /* Negative top margin to move title up */
+    color: var(--text-color);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.deadlines-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-top: 0.5rem;  /* Add some space after the adjusted title */
+    padding-right: 4px;
+}
+
+.deadline-card {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary-color);
+}
+
+.deadline-card.high {
+    border-left-color: var(--danger-color);
+}
+
+.deadline-card.medium {
+    border-left-color: #f1c40f;
+}
+
+.deadline-card.low {
+    border-left-color: var(--accent-color);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #eee;
+    border-radius: 5px;
+    margin-top: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.progress-bar-fill.critical {
+    background: var(--danger-color);
+}
+
+.progress-bar-fill.warning {
+    background: #f1c40f;
+}
+
+.progress-bar-fill.safe {
+    background: var(--accent-color);
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3000; /* Highest z-index */
+}
+
+.modal.active {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    border-radius: var(--border-radius);
+    position: relative;
+    margin: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.deadline-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.deadline-title-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.deadline-title {
+    font-weight: 500;
+    margin-right: auto;
+}
+
+.deadline-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.btn-edit,
+.btn-delete {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-edit:hover,
+.btn-delete:hover {
+    transform: scale(1.1);
+}
+
+.btn-delete {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.deadline-date {
+    color: #666;
+    font-size: 0.9rem;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.deadline-date::after {
+    content: attr(data-full-date);
+    position: absolute;
+    right: 0;
+    bottom: 120%;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+}
+
+.deadline-date:hover {
+    color: var(--primary-color);
+}
+
+.deadline-date:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    animation: none;
+    transform: translateY(0) scale(1);
+}
+
+/* Add a subtle highlight effect on hover */
+.deadline-date:hover {
+    color: var(--primary-color);
+    transition: color 0.2s ease;
+}
+
+.time-remaining {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.optimizer-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-box {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.stat-box h4 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-box p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var (--primary-color);
+}
+
+.optimized-path {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.path-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-left: 3px solid var(--accent-color);
+    margin: 0.5rem 0;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+    opacity: 1;
+}
+
+.filter-controls.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+.filter-group input {
+    width: 200px;
+}
+
+.header-with-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: -0.5rem 0 1rem 0;
+}
+
+.header-with-controls h2 {
+    margin: 0;
+}
+
+.btn-filter {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+}
+
+.btn-filter:hover {
+    background: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+/* Calendar styles */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 300px;  /* Set minimum width */
+}
+
+#currentMonth {
+    min-width: 150px;  /* Set fixed width for month display */
+    text-align: center;
+}
+
+.calendar-nav button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.calendar-nav button:hover {
+    background-color: var(--secondary-color);
+}
+
+#todayBtn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+#todayBtn:hover {
+    background-color: #357abd;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: 500;
+    padding: 0.5rem;
+    color: var(--text-color);
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-day {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* Creates a square aspect ratio */
+    border: 1px solid #eee;
+    border-radius: var(--border-radius);
+    background: white;
+    z-index: 1;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.calendar-day:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow);
+    z-index: 100; /* Lower than modal but higher than other calendar days */
+}
+
+.calendar-day-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.priority-dots-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    padding: 0.3rem;
+    width: fit-content;
+    margin: 0 auto 0.3rem auto;
+    max-width: 80%;
+}
+
+.priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.priority-dot.more {
+    font-size: 0.7rem;
+    color: var(--primary-color);
+    width: auto;
+    height: auto;
+    margin-left: 2px;
+}
+
+.priority-dots {
+    display: flex;
+    gap: 0.2rem;
+    margin-top: auto;
+    justify-content: center;
+    padding: 0.3rem 0;
+}
+
+.priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.priority-dot.high {
+    background-color: var(--danger-color);
+}
+
+.priority-dot.medium {
+    background-color: #f1c40f;
+}
+
+.priority-dot.low {
+    background-color: var(--accent-color);
+}
+
+.deadline-popup {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    left: calc(100% + 10px);  /* Add 10px gap */
+    top: 0;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    width: 250px;
+    z-index: 200; /* Just above hovered calendar day */
+    font-size: 0.9rem;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+}
+
+/* Show popup on the left side for cells in the last column */
+.calendar-day:nth-child(7n) .deadline-popup {
+    left: auto;
+    right: calc(100% + 10px);
+}
+
+.calendar-day:hover .deadline-popup {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Add styles for empty state */
+.deadline-popup-empty {
+    color: #666;
+    text-align: center;
+    padding: 1rem;
+}
+
+.deadline-popup-item {
+    padding: 0.5rem;
+    border-left: 3px solid var(--primary-color);
+    margin-bottom: 0.5rem;
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.deadline-popup-item.high {
+    border-left-color: var(--danger-color);
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.deadline-popup-item.medium {
+    border-left-color: #f1c40f;
+    background-color: rgba(241, 196, 15, 0.1);
+}
+
+.deadline-popup-item.low {
+    border-left-color: var(--accent-color);
+    background-color: rgba(46, 204, 113, 0.1);
+}
+
+.deadline-popup-title {
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+}
+
+.deadline-popup-time {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Remove the old calendar-deadline-list styles */
+.calendar-deadline-list,
+.calendar-deadline-item {
+    display: none;
+}
+
+.calendar-day-number {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    min-height: 20px;
+}
+
+.calendar-day.has-deadline {
+    border-color: var(--primary-color);
+}
+
+.calendar-day.has-deadline::after {
+    content: '';
+    position: absolute;
+    bottom: 0.3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+}
+
+.calendar-day.today {
+    background-color: var(--primary-color);
+}
+
+.calendar-day.other-month {
+    color: #ccc;
+    background-color: #f9f9f9;
+}
+
+/* Remove these styles as they're causing the issue */
+.modal-open .calendar-day {
+    z-index: auto;
+}
+
+.modal-open .calendar-day:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.modal-open .deadline-popup {
+    display: none;
+}
+
+/* Add new styles for better z-index management */
+.calendar-day.active {
+    z-index: 100;
+}
+
+.calendar-day.active .deadline-popup {
+    z-index: 200;
+}
+
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
