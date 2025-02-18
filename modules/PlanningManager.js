@@ -177,45 +177,68 @@ class PlanningManager {
         if (!planContainer)
             return;
 
+        const viewMode = localStorage.getItem('planViewMode') || 'list';
+        
         let html = `
             <div class="planning-header">
                 <h3>${plan.message}</h3>
                 <div class="daily-constraints">
                     Daily hour limits: 
                     ${Object.entries(this.dailyHoursConstraint).map(([day, hours]) =>
-            `<span class="day-constraint">${day.charAt(0).toUpperCase()}: ${hours}</span>`
-        ).join(' ')}
+                        `<span class="day-constraint">${day.charAt(0).toUpperCase()}: ${hours}</span>`
+                    ).join(' ')}
                 </div>
             </div>`;
 
         if (plan.warnings) {
-            html += `
-                <div class="planning-warnings">
-                    <div class="warning-header">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Warning: Some deadlines may be impossible to complete
-                    </div>
-                    ${plan.warnings.map(warning => `
-                        <div class="warning-item">
-                            <p class="warning-title">${warning.courseName}: ${warning.taskName}</p>
-                            <p class="warning-details">
-                                Requires ${warning.timeNeeded} hours but only ${warning.availableHours} hours available 
-                                in ${warning.daysUntilDue} days
-                            </p>
-                        </div>
-                    `).join('')}
-                </div>`;
+            html += this.generateWarningsHtml(plan.warnings);
         }
 
-        html += `<div class="planning-days">`;
-        plan.days.forEach(day => {
-            const totalHours = day.tasks.reduce((sum, task) => sum + task.hours, 0);
+        html += `<div class="list-view ${viewMode === 'list' ? 'active' : ''}">`;
+        html += this.generateListViewHtml(plan.days);
+        html += `</div>`;
 
-            html += `
+        html += `<div class="roadmap-view ${viewMode === 'roadmap' ? 'active' : ''}">`;
+        html += this.generateRoadmapViewHtml(plan.days);
+        html += `</div>`;
+
+        planContainer.innerHTML = html;
+
+        const viewToggle = document.getElementById('planViewToggle');
+        if (viewToggle) {
+            const toggleHandler = () => this.toggleView();
+            viewToggle.removeEventListener('click', toggleHandler);
+            viewToggle.addEventListener('click', toggleHandler);
+            viewToggle.innerHTML = `<i class="fas fa-${viewMode === 'list' ? 'route' : 'list'}"></i>`;
+        }
+    }
+
+    generateWarningsHtml(warnings) {
+        return `
+            <div class="planning-warnings">
+                <div class="warning-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Warning: Some deadlines may be impossible to complete
+                </div>
+                ${warnings.map(warning => `
+                    <div class="warning-item">
+                        <p class="warning-title">${warning.courseName}: ${warning.taskName}</p>
+                        <p class="warning-details">
+                            Requires ${warning.timeNeeded} hours but only ${warning.availableHours} hours available 
+                            in ${warning.daysUntilDue} days
+                        </p>
+                    </div>
+                `).join('')}
+            </div>`;
+    }
+
+    generateListViewHtml(days) {
+        return `<div class="planning-days">
+            ${days.map(day => `
                 <div class="planning-day">
                     <div class="planning-day-header">
                         <span class="day-date">${day.date}</span>
-                        <span class="day-hours">${totalHours} hours total</span>
+                        <span class="day-hours">${day.tasks.reduce((sum, task) => sum + task.hours, 0)} hours total</span>
                     </div>
                     <div class="planning-tasks">
                         ${day.tasks.map(task => `
@@ -228,10 +251,80 @@ class PlanningManager {
                         `).join('')}
                     </div>
                 </div>
-            `;
-        });
+            `).join('')}
+        </div>`;
+    }
 
-        html += `</div>`;
-        planContainer.innerHTML = html;
+    generateRoadmapViewHtml(days) {
+        return `<div class="roadmap-timeline">
+            ${days.map(day => {
+                const totalHours = day.tasks.reduce((sum, task) => sum + task.hours, 0);
+                const maxPriority = day.tasks.reduce((max, task) => 
+                    this.getPriorityValue(task.priority) > this.getPriorityValue(max) ? 
+                    task.priority : max, 'low');
+                
+                return `
+                    <div class="roadmap-item">
+                        <div class="roadmap-content ${maxPriority}">
+                            <div class="roadmap-total-hours">${totalHours} hours</div>
+                            <div class="roadmap-date">
+                                <i class="far fa-calendar-alt"></i> ${day.date}
+                            </div>
+                            <div class="roadmap-tasks">
+                                ${day.tasks.map(task => `
+                                    <div class="planning-task ${task.priority}">
+                                        <div class="task-info">
+                                            <span class="task-name">
+                                                ${this.getPriorityIcon(task.priority)}
+                                                ${task.courseName}: ${task.taskName}
+                                            </span>
+                                            <span class="task-hours">
+                                                <i class="far fa-clock"></i> ${task.hours} hours
+                                            </span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>`;
+    }
+
+    getPriorityIcon(priority) {
+        const icons = {
+            high: '<i class="fas fa-exclamation-circle" style="color: var(--danger-color)"></i>',
+            medium: '<i class="fas fa-exclamation" style="color: var(--warning-color)"></i>',
+            low: '<i class="fas fa-arrow-right" style="color: var(--accent-color)"></i>'
+        };
+        return icons[priority] || '';
+    }
+
+    getPriorityValue(priority) {
+        const values = {
+            high: 3,
+            medium: 2,
+            low: 1
+        };
+        return values[priority] || 0;
+    }
+
+    toggleView() {
+        const currentView = localStorage.getItem('planViewMode') || 'list';
+        const newView = currentView === 'list' ? 'roadmap' : 'list';
+        
+        localStorage.setItem('planViewMode', newView);
+
+        const listView = document.querySelector('.list-view');
+        const roadmapView = document.querySelector('.roadmap-view');
+        const viewToggle = document.getElementById('planViewToggle');
+
+        listView.classList.toggle('active');
+        roadmapView.classList.toggle('active');
+
+        if (viewToggle) {
+            viewToggle.innerHTML = `<i class="fas fa-${newView === 'list' ? 'route' : 'list'}"></i>`;
+        }
     }
 }
