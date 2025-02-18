@@ -8,6 +8,9 @@ class DeadlineTracker {
         this.isAdminMode = localStorage.getItem('adminMode') === 'true';
         this.initializeAdminMode();
         this.notificationManager = new NotificationManager();
+        this.settingsManager = new SettingsManager();
+        // Make notificationManager available globally for SettingsManager
+        window.notificationManager = this.notificationManager;
     }
 
     initialize() {
@@ -106,6 +109,12 @@ class DeadlineTracker {
 
         colorInput.addEventListener('input', (e) => {
             colorPreview.style.backgroundColor = e.target.value;
+        });
+
+        // Add settings button handler
+        const settingsBtn = document.getElementById('settingsBtn');
+        settingsBtn.addEventListener('click', () => {
+            UIManager.showModal(document.getElementById('settingsModal'));
         });
     }
 

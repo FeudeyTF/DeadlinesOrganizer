@@ -1,14 +1,38 @@
 class UIManager {
     static showModal(modal) {
         modal.style.display = 'flex';
-        modal.offsetHeight;
+        modal.offsetHeight; // Force reflow
         modal.classList.add('active');
+        document.body.classList.add('modal-open');
+
+        const closeBtn = modal.querySelector('.close');
+        if (closeBtn) {
+            const closeHandler = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.hideModal(modal);
+                closeBtn.removeEventListener('click', closeHandler);
+            };
+            closeBtn.addEventListener('click', closeHandler);
+        }
+
+        const outsideClickHandler = (e) => {
+            if (e.target === modal) {
+                const isColorPicker = e.target.closest('.color-setting');
+                if (!isColorPicker) {
+                    this.hideModal(modal);
+                    modal.removeEventListener('click', outsideClickHandler);
+                }
+            }
+        };
+        modal.addEventListener('click', outsideClickHandler);
     }
 
     static hideModal(modal) {
         modal.classList.remove('active');
         setTimeout(() => {
             modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
             document.querySelectorAll('.calendar-day').forEach(day => {
                 day.classList.remove('active');
             });
