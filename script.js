@@ -218,13 +218,16 @@ class DeadlineTracker {
                 const progress = deadline.progress;
                 switch (this.filters.status) {
                     case 'pending':
-                        if (progress > 0) return false;
+                        if (progress > 0)
+                            return false;
                         break;
                     case 'inProgress':
-                        if (progress === 0 || progress === 100) return false;
+                        if (progress === 0 || progress === 100)
+                            return false;
                         break;
                     case 'completed':
-                        if (progress < 100) return false;
+                        if (progress < 100)
+                            return false;
                         break;
                 }
             }
@@ -483,7 +486,8 @@ class DeadlineTracker {
         const due = new Date(dueDate);
         const diff = due - now;
 
-        if (diff < 0) return 'Past due';
+        if (diff < 0)
+            return 'Past due';
 
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -626,8 +630,10 @@ class DeadlineTracker {
             tagsList.appendChild(tagElement);
         });
 
+        // Update all tag selectors including filter tags
         this.updateTagsSelect('deadlineTags');
         this.updateTagsSelect('editDeadlineTags');
+        this.updateTagsSelect('filterTags');
     }
 
     saveTags() {
@@ -641,7 +647,8 @@ class DeadlineTracker {
 
     updateTagsSelect(containerId) {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container)
+            return;
 
         container.innerHTML = '';
         this.tags.forEach(tag => {
@@ -680,7 +687,8 @@ class DeadlineTracker {
             .map(tagId => this.tags.find(t => t.id === tagId))
             .filter(tag => tag);
 
-        if (tags.length === 0) return '';
+        if (tags.length === 0)
+            return '';
 
         return `
             <div class="deadline-tags">
@@ -696,10 +704,8 @@ class DeadlineTracker {
     initializeTagFilters() {
         const radioButtons = document.getElementsByName('tagFilterMode');
 
-        // Initialize tag selection
         this.updateTagsSelect('filterTags');
 
-        // Add change handlers for radio buttons
         radioButtons.forEach(radio => {
             radio.addEventListener('change', () => {
                 this.filters.tagMode = radio.value;
