@@ -1,5 +1,6 @@
 class DeadlineTracker {
     constructor() {
+        this.initializeWelcomeScreen();
         this.deadlineManager = new DeadlineManager();
         this.filterManager = new FilterManager();
         this.tagManager = new TagManager();
@@ -9,14 +10,13 @@ class DeadlineTracker {
         this.initializeAdminMode();
         this.notificationManager = new NotificationManager();
         this.settingsManager = new SettingsManager();
-        // Make notificationManager available globally for SettingsManager
         window.notificationManager = this.notificationManager;
     }
 
     initialize() {
         this.initializeEventListeners();
         this.initializeModals();
-        this.calendarManager.updateCalendar(); // Call this first
+        this.calendarManager.updateCalendar();
         this.updateUI();
         this.initializeCalendarEvents();
         this.initializeFilterEvents();
@@ -183,6 +183,22 @@ class DeadlineTracker {
             this.isAdminMode = !this.isAdminMode;
             document.body.classList.toggle('admin-mode', this.isAdminMode);
             localStorage.setItem('adminMode', this.isAdminMode);
+        });
+    }
+
+    initializeWelcomeScreen() {
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        
+        if (!localStorage.getItem('hasSeenWelcome')) {
+            requestAnimationFrame(() => {
+                welcomeScreen.classList.remove('hidden');
+            });
+        }
+
+        getStartedBtn.addEventListener('click', () => {
+            localStorage.setItem('hasSeenWelcome', 'true');
+            this.notificationManager.info('Welcome to Course Deadline Tracker!');
         });
     }
 
