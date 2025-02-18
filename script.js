@@ -4,6 +4,8 @@ class DeadlineTracker {
         this.filterManager = new FilterManager();
         this.tagManager = new TagManager();
         this.calendarManager = new CalendarManager(this.deadlineManager);
+        this.isAdminMode = localStorage.getItem('adminMode') === 'true';
+        this.initializeAdminMode();
     }
 
     initialize() {
@@ -159,15 +161,29 @@ class DeadlineTracker {
         });
     }
 
+    initializeAdminMode() {
+        const toggleBtn = document.getElementById('toggleAdminMode');
+
+        // Set initial state
+        document.body.classList.toggle('admin-mode', this.isAdminMode);
+
+        // Add click handler
+        toggleBtn.addEventListener('click', () => {
+            this.isAdminMode = !this.isAdminMode;
+            document.body.classList.toggle('admin-mode', this.isAdminMode);
+            localStorage.setItem('adminMode', this.isAdminMode);
+        });
+    }
+
     updateUI() {
         const now = new Date();
         const allDeadlines = this.deadlineManager.sortDeadlines();
-        
+
         const pastDeadlines = allDeadlines.filter(d => new Date(d.dueDate) < now);
         const activeDeadlines = allDeadlines.filter(d => new Date(d.dueDate) >= now);
 
         const filteredDeadlines = this.filterManager.applyFilters(activeDeadlines);
-        
+
         UIManager.updateDeadlinesList(filteredDeadlines, this.tagManager, {
             onEdit: (id) => this.handleEditClick(id),
             onDelete: (id) => this.handleDeleteClick(id)
@@ -208,7 +224,8 @@ class DeadlineTracker {
         const deadline = this.deadlineManager.deadlines.find(d => d.id === id);
         if (!deadline)
             return;
-
+        if (!this.isAdminMode)
+            return;
         UIManager.populateEditForm(deadline);
         UIManager.showModal(document.getElementById('editModal'));
     }

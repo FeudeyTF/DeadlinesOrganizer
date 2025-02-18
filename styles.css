@@ -970,6 +970,34 @@ input[type="color"] {
     transition: transform 0.2s ease;
 }
 
+/* Admin mode styles */
+.admin-control {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+body:not(.admin-mode) .admin-control {
+    display: none !important;
+}
+
+#toggleAdminMode {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#toggleAdminMode i {
+    transition: transform 0.3s ease;
+}
+
+body.admin-mode #toggleAdminMode i {
+    transform: rotate(-10deg);
+}
+
+body.admin-mode #toggleAdminMode {
+    background-color: var(--primary-color);
+    color: white;
+}
+
 @media (max-width: 768px) {
     .dashboard {
         grid-template-columns: 1fr;

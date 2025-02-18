@@ -112,7 +112,7 @@ class UIManager {
             <div class="deadline-info">
                 <div class="deadline-title-group">
                     <div class="deadline-title">${deadline.courseName} - ${deadline.taskName}</div>
-                    <div class="deadline-actions">
+                    <div class="deadline-actions admin-control">
                         <button class="btn-edit" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
