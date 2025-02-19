@@ -1,0 +1,79 @@
+@use "../colors";
+@use "../functions.scss";
+@use "sass:color";
+
+$color-default: colors.bg(colors.$primary);
+$color-primary: colors.bg(colors.$primary);
+$color-disabled: hsl(0, 0%, 60%);
+$color-selected: colors.bg(colors.$green);
+$color-caution: colors.bg(colors.$yellow);
+$color-danger: colors.bg(colors.$red);
+$color-transparent-text: rgba(255, 255, 255, 0.5);
+$border-radius: colors.$border-radius;
+$bg-map: colors.$bg-map;
+
+@mixin button-color($color) {
+    $luminance: functions.luminance($color) / 100;
+    $text-color: if($luminance > 0.4, rgba(0, 0, 0, 1), rgba(255, 255, 255, 1));
+  
+    background-color: $color;
+    color: $text-color;
+
+    transition: background-color  0.3s ease;
+  
+    &:focus {
+      transition:
+        color 100ms,
+        background-color 100ms;
+    }
+  
+    &:hover {
+      background-color: darken($color, 10%);
+      color: $text-color;
+    }
+  }
+
+.Button {
+    position: relative;
+    padding: 0.8rem 1.5rem;
+    margin-right: 2px;
+    white-space: nowrap;
+    outline: 0;
+    border-radius: $border-radius;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    -ms-user-select: none;
+
+    &:last-child {
+      margin-right: 0;
+    }
+}
+
+@each $color-name, $color-value in $bg-map {
+  .Button--color--#{$color-name} {
+    @include button-color($color-value);
+  }
+}
+
+.Button--color--primary {
+  @include button-color($color-primary);
+}
+
+.Button--color--caution {
+  @include button-color($color-caution);
+}
+
+.Button--color--danger {
+  @include button-color($color-danger);
+}
+
+.Button--disabled {
+  background-color: $color-disabled;
+}
+
+.Button--color--default {
+  @include button-color($color-default);
+}

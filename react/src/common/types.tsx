@@ -1,0 +1,1 @@
+export type BooleanLike = number | boolean | null | undefined;

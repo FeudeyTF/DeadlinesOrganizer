@@ -1,0 +1,7 @@
+@use "sass:meta";
+
+/* Components */
+@include meta.load-css("./components/Button.scss");
+
+
+@include meta.load-css("./interfaces/DeadlinesOrganizer.scss");

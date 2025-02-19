@@ -1,0 +1,93 @@
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:meta';
+@use "sass:math";
+
+$color-fg: #ffffff;
+$color-bg: rgb(36, 36, 36);
+$color-bg-section: rgba(0, 0, 0, 0.329);
+$color-bg-grad-spread: 2%;
+$color-bg-start: color.adjust(
+  $color-bg,
+  $lightness: $color-bg-grad-spread
+);
+$color-bg-end: color.adjust(
+  $color-bg,
+  $lightness: -$color-bg-grad-spread
+);
+
+$border-radius: 8px;
+
+$black: #000000;
+$white: #ffffff;
+$red: #db2424;
+$orange: #f27521;
+$yellow: #fbdc0e;
+$olive: #b3ca1c;
+$green: #1fb246;
+$teal: #00b3ad;
+$blue: #297dc7;
+$violet: #6333cc;
+$purple: #aa32c8;
+$pink: #de3f99;
+$brown: #a9683d;
+$grey: #787878;
+$light-grey: #ababab;
+
+$primary: #4a90e2;
+$secondary: #f5f6fa;
+$good: #2ecc71;
+$average: #f1c40f;
+$bad: #e74c3c;
+$text: #2c3e50;
+
+$bg-lightness: -15%;
+$fg-lightness: 10%;
+
+@function bg($color) {
+    @return color.scale($color, $lightness: $bg-lightness);
+}
+
+@function fg($color) {
+    @return color.scale($color, $lightness: $fg-lightness);
+}
+
+$colors-map: (
+    'black': $black,
+    'white': $white,
+    'red': $red,
+    'orange': $orange,
+    'yellow': $yellow,
+    'olive': $olive,
+    'green': $green,
+    'teal': $teal,
+    'blue': $blue,
+    'violet': $violet,
+    'purple': $purple,
+    'pink': $pink,
+    'brown': $brown,
+    'grey': $grey,
+    'light-grey': $light-grey,
+    'good': $good,
+    'average': $average,
+    'bad': $bad
+);
+
+$fg-map-keys: map.keys($colors-map);
+$bg-map-keys: map.keys($colors-map);
+
+$fg-map: (
+);
+
+@each $color-name in $fg-map-keys {
+    $fg-map: map.merge($fg-map, ($color-name: fg(map.get($colors-map, $color-name)),
+            ));
+}
+
+$bg-map: (
+);
+
+@each $color-name in $bg-map-keys {
+    $bg-map: map.merge($bg-map, ($color-name: bg(map.get($colors-map, $color-name)),
+            ));
+}
