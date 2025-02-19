@@ -1,0 +1,280 @@
+/* Calendar styles */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 300px;
+}
+
+#currentMonth {
+    min-width: 150px;
+    text-align: center;
+}
+
+.calendar-nav button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.calendar-nav button:hover {
+    background-color: var(--secondary-color);
+}
+
+#todayBtn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+#todayBtn:hover {
+    background-color: var(--primary-dark-color);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: 500;
+    padding: 0.5rem;
+    color: var(--text-color);
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-day {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    border: 1px solid #eee;
+    border-radius: var(--border-radius);
+    background: white;
+    z-index: 1;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.calendar-day:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow);
+    z-index: 100;
+}
+
+.calendar-day-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.calendar-day:nth-child(7n) .deadline-popup {
+    left: auto;
+    right: calc(100% + 10px);
+}
+
+.calendar-day:hover .deadline-popup {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+.calendar-deadline-list,
+.calendar-deadline-item {
+    display: none;
+}
+
+.calendar-day-number {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    min-height: 20px;
+}
+
+.calendar-day.has-deadline {
+    border-color: var(--primary-color);
+}
+
+.calendar-day.has-deadline::after {
+    content: '';
+    position: absolute;
+    bottom: 0.3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+}
+
+.calendar-day.today {
+    background-color: var(--primary-color);
+}
+
+.calendar-day.other-month {
+    color: #ccc;
+    background-color: #f9f9f9;
+}
+
+.modal-open .calendar-day {
+    z-index: auto;
+}
+
+.modal-open .calendar-day:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.modal-open .deadline-popup {
+    display: none;
+}
+
+.calendar-day.active {
+    z-index: 100;
+}
+
+.calendar-day.active .deadline-popup {
+    z-index: 200;
+}
+
+/* Priority dots */
+
+.priority-dots-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    padding: 0.3rem;
+    width: fit-content;
+    margin: 0 auto 0.3rem auto;
+    max-width: 80%;
+}
+
+.priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.priority-dot.more {
+    font-size: 0.7rem;
+    color: var(--primary-color);
+    width: auto;
+    height: auto;
+    margin-left: 2px;
+}
+
+.priority-dots {
+    display: flex;
+    gap: 0.2rem;
+    margin-top: auto;
+    justify-content: center;
+    padding: 0.3rem 0;
+}
+
+.priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.priority-dot.high {
+    background-color: var(--danger-color);
+}
+
+.priority-dot.medium {
+    background-color: var(--warning-color);
+}
+
+.priority-dot.low {
+    background-color: var(--accent-color);
+}
+
+/* Deadline popup */
+
+.deadline-popup {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    left: calc(100% + 10px);
+    top: 0;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    width: 250px;
+    z-index: 200;
+    font-size: 0.9rem;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+}
+
+
+.deadline-popup-empty {
+    color: #666;
+    text-align: center;
+    padding: 1rem;
+}
+
+.deadline-popup-item {
+    padding: 0.5rem;
+    border-left: 3px solid var(--primary-color);
+    margin-bottom: 0.5rem;
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.deadline-popup-item.high {
+    border-left-color: var(--danger-color);
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.deadline-popup-item.medium {
+    border-left-color: var(--warning-color);
+    background-color: rgba(241, 196, 15, 0.1);
+}
+
+.deadline-popup-item.low {
+    border-left-color: var(--accent-color);
+    background-color: rgba(46, 204, 113, 0.1);
+}
+
+.deadline-popup-title {
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+}
+
+.deadline-popup-time {
+    font-size: 0.8rem;
+    color: #666;
+}

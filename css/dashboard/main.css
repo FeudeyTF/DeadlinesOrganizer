@@ -1,0 +1,39 @@
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.dashboard-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: visible;
+    cursor: grab;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    user-select: none;
+}
+
+.dashboard-item.dragging {
+    opacity: 0.8;
+    cursor: grabbing;
+    z-index: 1000;
+    position: relative;
+}
+
+.dashboard-drop-preview {
+    position: relative;
+}
+
+.dashboard-drop-preview::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px dashed var(--primary-color);
+    border-radius: var(--border-radius);
+    background-color: rgba(74, 144, 226, 0.1);
+    pointer-events: none;
+}

@@ -1,0 +1,144 @@
+.tags-list {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    color: white;
+    font-size: 0.9rem;
+}
+
+.tag-item .delete-tag {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.2rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.tag-item .delete-tag:hover {
+    opacity: 1;
+}
+
+#tagColor {
+    height: 40px;
+    padding: 0;
+}
+
+.tag-form {
+    margin-top: 1.5rem;
+}
+
+.tag-form-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: var(--secondary-color);
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.tag-form-container input[type="text"] {
+    flex: 1;
+    border: none;
+    background: white;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.tag-form-container input[type="text"]:focus {
+    outline: 2px solid var(--primary-color);
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 1rem;
+    background: #f5f6fa;
+    border-radius: var(--border-radius);
+    min-height: 60px;
+}
+
+.tag-item {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tag-item .delete-tag {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 0.8rem;
+}
+
+.tag-item .delete-tag:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.tags-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f5f6fa;
+    border-radius: var(--border-radius);
+    min-height: 40px;
+}
+
+.tag-select-item {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.tag-select-item.selected {
+    opacity: 1;
+}
+
+.deadline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+}
+
+.deadline-tag {
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}

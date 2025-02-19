@@ -1,0 +1,29 @@
+.dashboard-item h2 {
+    margin: -0.5rem 0 1rem 0;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.header-with-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: -0.5rem 0 1rem 0;
+}
+
+.header-with-controls h2 {
+    margin: 0;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.deadlines-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-top: 0.5rem;
+    padding-right: 4px;
+}
