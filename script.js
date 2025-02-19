@@ -87,7 +87,6 @@ class DeadlineTracker {
             });
         });
 
-        // Add tag form handler
         const tagForm = document.getElementById('tagForm');
         tagForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -102,7 +101,6 @@ class DeadlineTracker {
             document.getElementById('tagColor').value = '#4a90e2';
         });
 
-        // Initialize color picker preview
         const colorInput = document.getElementById('tagColor');
         const colorPreview = document.getElementById('colorPreview');
         colorInput.value = '#4a90e2';
@@ -112,10 +110,17 @@ class DeadlineTracker {
             colorPreview.style.backgroundColor = e.target.value;
         });
 
-        // Add settings button handler
         const settingsBtn = document.getElementById('settingsBtn');
         settingsBtn.addEventListener('click', () => {
             UIManager.showModal(document.getElementById('settingsModal'));
+        });
+
+        document.getElementById('clearStorage').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                localStorage.clear();
+                this.notificationManager.warning('All data has been cleared. The page will now reload.');
+                setTimeout(() => window.location.reload(), 2000);
+            }
         });
     }
 
