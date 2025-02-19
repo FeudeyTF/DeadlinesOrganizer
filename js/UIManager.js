@@ -69,7 +69,13 @@ class UIManager {
         deadlinesList.innerHTML = '';
 
         if (deadlines.length === 0) {
-            deadlinesList.innerHTML = '<div class="no-results">No deadlines match your filters</div>';
+            deadlinesList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-filter-circle-xmark"></i>
+                    <h3>No matching deadlines found</h3>
+                    <p>Try adjusting your filters or adding new deadlines.</p>
+                </div>
+            `;
             return;
         }
 

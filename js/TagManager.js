@@ -26,6 +26,17 @@ class TagManager {
         const tagsList = document.getElementById('tagsList');
         if (!tagsList) return;
 
+        if (this.tags.length === 0) {
+            tagsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-tags"></i>
+                    <h3>No tags created yet</h3>
+                    <p>Create your first tag using the form below to start organizing your deadlines.</p>
+                </div>
+            `;
+            return;
+        }
+
         tagsList.innerHTML = '';
         this.tags.forEach(tag => {
             const tagElement = document.createElement('div');

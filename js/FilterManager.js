@@ -9,6 +9,7 @@ class FilterManager {
         };
         this.initializeFilters();
         this.restoreFilterVisibility();
+        this.initializeResetButton();
     }
 
     initializeFilters() {
@@ -21,6 +22,31 @@ class FilterManager {
         this.filters.status = statusFilter.value;
         this.filters.search = searchFilter.value;
         this.filters.tagMode = tagMode ? tagMode.value : 'any';
+    }
+
+    initializeResetButton() {
+        const resetBtn = document.getElementById('resetFiltersBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                this.resetFilters();
+                this.updateFilterControls();
+                window.dispatchEvent(new Event('filtersChanged'));
+            });
+        }
+    }
+
+    updateFilterControls() {
+        document.getElementById('priorityFilter').value = this.filters.priority;
+        document.getElementById('statusFilter').value = this.filters.status;
+        document.getElementById('searchFilter').value = this.filters.search;
+        
+        document.querySelectorAll('#filterTags .tag-select-item').forEach(tag => {
+            tag.classList.remove('selected');
+        });
+        
+        const tagMode = document.querySelector(`input[name="tagFilterMode"][value="${this.filters.tagMode}"]`);
+        if (tagMode)
+            tagMode.checked = true;
     }
 
     updateFilter(type, value) {
