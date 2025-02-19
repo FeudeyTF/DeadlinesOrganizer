@@ -99,7 +99,13 @@ class UIManager {
         pastDeadlinesList.innerHTML = '';
 
         if (deadlines.length === 0) {
-            pastDeadlinesList.innerHTML = '<div class="no-results">No past deadlines</div>';
+            pastDeadlinesList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    <h3>No past deadlines</h3>
+                    <p>Completed deadlines will appear here after their due date.</p>
+                </div>
+            `;
             return;
         }
 
