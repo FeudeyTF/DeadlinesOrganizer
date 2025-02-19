@@ -1,0 +1,32 @@
+@use '../colors.scss';
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.Section {
+    background: colors.$white;
+    padding: 1.5rem;
+    border-radius: colors.$border-radius;
+    box-shadow: colors.$shadow;
+    position: relative;
+    overflow: visible;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    user-select: none;
+}
+
+.Section--title {
+    margin: -0.5rem 0 1rem 0;
+    color: colors.$text;
+    font-size: 1.5rem;
+    font-weight: 500;
+
+    &.with--buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: -0.5rem 0 1rem 0;
+    }
+}

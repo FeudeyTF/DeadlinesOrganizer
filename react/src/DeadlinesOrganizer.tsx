@@ -1,4 +1,5 @@
 import { Button } from "./common/components/Button";
+import { Section } from "./common/components/Section";
 
 function DeadlinesOrganizer() {
   return (
@@ -13,7 +14,10 @@ function DeadlinesOrganizer() {
       </header>
 
       <div className="dashboard">
-        <div className="dashboard-item" data-position="0"></div>
+        <Section title="Calendar" />
+        <Section title="Upcoming Deadlines" />
+        <Section title="Past Deadlines" />
+        <Section title="Work Plan" />
       </div>
     </div>
   );
