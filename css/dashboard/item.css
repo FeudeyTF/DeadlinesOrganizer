@@ -1,3 +1,8 @@
+.dashboard-item {
+    background-color: var(--dashboard-item-color);
+    transition: background-color 0.3s ease;
+}
+
 .dashboard-item h2 {
     margin: -0.5rem 0 1rem 0;
     color: var(--text-color);

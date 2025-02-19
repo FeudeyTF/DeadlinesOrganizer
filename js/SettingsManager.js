@@ -1,19 +1,79 @@
 class SettingsManager {
     constructor() {
-        this.defaultSettings = {
-            colorPalette: {
+        this.prebuiltPalettes = {
+            Light: {
                 primary: '#4a90e2',
                 primaryDark: '#357abd',
                 secondary: '#f5f6fa',
                 accent: '#2ecc71',
                 warning: '#f1c40f',
                 danger: '#e74c3c',
-                text: '#2c3e50'
+                text: '#2c3e50',
+                secondaryText: '#2c3e50',
+                dashboardItem: '#ffffff',
+                dashboardItemHover: '#f8f9fa',
+                dashboardItemActive: '#e9ecef',
+                modalBackground: '#ffffff'
+            },
+            Dark: {
+                primary: '#3498db',
+                primaryDark: '#2980b9',
+                secondary: '#2c3e50',
+                accent: '#27ae60',
+                warning: '#f39c12',
+                danger: '#c0392b',
+                text: '#ecf0f1',
+                secondaryText: '#2c3e50',
+                dashboardItem: '#2c3e50',
+                dashboardItemHover: '#34495e',
+                dashboardItemActive: '#2980b9',
+                modalBackground: '#34495e'
+            },
+            SoftDark: {
+                primary: '#6c5ce7',
+                primaryDark: '#5849c2',
+                secondary: '#2d3436',
+                accent: '#00b894',
+                warning: '#fdcb6e',
+                danger: '#d63031',
+                text: '#dfe6e9',
+                secondaryText: '#2c3e50',
+                dashboardItem: '#2d3436',
+                dashboardItemHover: '#353b48',
+                dashboardItemActive: '#5849c2',
+                modalBackground: '#353b48'
+            },
+            Ocean: {
+                primary: '#00BCD4',
+                primaryDark: '#0097A7',
+                secondary: '#78909C',
+                accent: '#009688',
+                warning: '#FFB300',
+                danger: '#FF5252',
+                text: '#263238',
+                secondaryText: '#607D8B',
+                dashboardItem: '#E0F7FA',
+                modalBackground: '#ECEFF1'
+            },
+            Monokai: {
+                primary: '#66D9EF',
+                primaryDark: '#49B6CD',
+                secondary: '#75715E',
+                accent: '#A6E22E',
+                warning: '#FD971F',
+                danger: '#F92672',
+                text: '#F8F8F2',
+                secondaryText: '#919288',
+                dashboardItem: '#272822',
+                modalBackground: '#1E1F1C'
             }
+        };
+
+        this.defaultSettings = {
+            colorPalette: this.prebuiltPalettes.Light
         };
         
         this.settings = this.loadSettings();
-        // Apply settings immediately when constructed
         this.applySettings();
         this.initializeEventListeners();
     }
@@ -36,7 +96,6 @@ class SettingsManager {
             root.style.setProperty(`--${this.kebabCase(key)}-color`, value);
         });
 
-        // Dispatch event for other components that might need to react to settings changes
         window.dispatchEvent(new CustomEvent('settingsChanged', {
             detail: { settings: this.settings }
         }));
@@ -49,7 +108,6 @@ class SettingsManager {
     }
 
     initializeEventListeners() {
-        // Ensure DOM is loaded before trying to access elements
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.initializeSettings());
         } else {
@@ -58,11 +116,9 @@ class SettingsManager {
     }
 
     initializeSettings() {
-        // First generate the color settings HTML
         this.generateColorSettings();
-        // Then populate the form with current values
         this.populateSettingsForm();
-        // Then initialize tabs and color pickers
+        this.initializePaletteSelector();
         this.initializeTabs();
         this.initializeColorPickers();
 
@@ -86,6 +142,117 @@ class SettingsManager {
         }
     }
 
+    initializePaletteSelector() {
+        const container = document.querySelector('.palette-previews');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        Object.entries(this.prebuiltPalettes).forEach(([paletteName, palette]) => {
+            const option = document.createElement('div');
+            option.className = 'palette-option';
+            option.setAttribute('data-palette', paletteName);
+            option.title = `${paletteName} Theme`;
+
+            const pie = document.createElement('div');
+            pie.className = 'palette-pie';
+
+            const svg = `
+                <svg viewBox="0 0 32 32">
+                    <circle r="16" cx="16" cy="16" fill="${palette.primary}"/>
+                    <path d="M16 16L16 0A16 16 0 0 1 29.8 24L16 16Z" fill="${palette.accent}"/>
+                    <path d="M16 16L29.8 24A16 16 0 0 1 16 32L16 16Z" fill="${palette.warning}"/>
+                </svg>
+            `;
+            pie.innerHTML = svg;
+            option.appendChild(pie);
+            container.appendChild(option);
+        });
+
+        const previewWindow = document.createElement('div');
+        previewWindow.className = 'theme-preview-window';
+        previewWindow.innerHTML = `
+            <div class="preview-header">
+                <span class="preview-title">Theme Preview</span>
+                <button class="preview-apply">Apply Theme</button>
+                <button class="preview-close">&times;</button>
+            </div>
+            <div class="preview-content">
+                <div class="preview-card">
+                    <div class="card-header">Example Card</div>
+                    <div class="card-content">
+                        <div class="preview-button btn-primary">Primary Button</div>
+                        <div class="preview-button btn-secondary">Secondary Button</div>
+                        <div class="preview-alert warning">Warning Message</div>
+                        <div class="preview-alert danger">Error Message</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(previewWindow);
+
+        let currentPreviewPalette = null;
+
+        const paletteOptions = document.querySelectorAll('.palette-option');
+        paletteOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const paletteName = option.getAttribute('data-palette');
+                const palette = this.prebuiltPalettes[paletteName];
+                
+                paletteOptions.forEach(opt => opt.classList.remove('active'));
+                
+                if (currentPreviewPalette === paletteName) {
+                    previewWindow.classList.remove('active');
+                    this.applySettings();
+                    currentPreviewPalette = null;
+                } else {
+                    option.classList.add('active');
+                    this.previewPalette(palette);
+                    previewWindow.classList.add('active');
+                    currentPreviewPalette = paletteName;
+                }
+            });
+        });
+
+        const closeBtn = previewWindow.querySelector('.preview-close');
+        closeBtn.addEventListener('click', () => {
+            previewWindow.classList.remove('active');
+            this.applySettings();
+            paletteOptions.forEach(opt => opt.classList.remove('active'));
+            currentPreviewPalette = null;
+        });
+
+        const applyBtn = previewWindow.querySelector('.preview-apply');
+        applyBtn.addEventListener('click', () => {
+            if (currentPreviewPalette) {
+                this.settings.colorPalette = {...this.prebuiltPalettes[currentPreviewPalette]};
+                this.saveSettings();
+                this.populateSettingsForm();
+                this.updateColorPickers();
+                previewWindow.classList.remove('active');
+                if (window.notificationManager) {
+                    window.notificationManager.success('Theme applied successfully');
+                }
+            }
+        });
+    }
+
+    previewPalette(palette) {
+        const root = document.documentElement;
+        
+        if (!this._originalValues) {
+            this._originalValues = {};
+            Object.keys(palette).forEach(key => {
+                this._originalValues[key] = getComputedStyle(root)
+                    .getPropertyValue(`--${this.kebabCase(key)}-color`).trim();
+            });
+        }
+
+        Object.entries(palette).forEach(([key, value]) => {
+            root.style.setProperty(`--${this.kebabCase(key)}-color`, value);
+        });
+    }
+
     generateColorSettings() {
         const container = document.getElementById('colorSettingsGrid');
         if (!container) return;
@@ -97,7 +264,10 @@ class SettingsManager {
             accent: 'Accent Color',
             warning: 'Warning Color',
             danger: 'Danger Color',
-            text: 'Text Color'
+            text: 'Text Color',
+            secondaryText: 'Secondary Text Color',
+            dashboardItem: 'Dashboard Block Background',
+            modalBackground: 'Modal Background'
         };
 
         container.innerHTML = Object.entries(colorLabels)
@@ -141,18 +311,15 @@ class SettingsManager {
             const valueDisplay = setting.querySelector('.color-value');
 
             if (input && preview) {
-                // Get color key from data-setting attribute
                 const colorKey = input.getAttribute('data-setting');
                 const currentColor = colors[colorKey] || this.defaultSettings.colorPalette[colorKey];
 
-                // Set initial values
                 input.value = currentColor;
                 preview.style.backgroundColor = currentColor;
                 if (valueDisplay) {
                     valueDisplay.textContent = currentColor.toUpperCase();
                 }
 
-                // Update preview and value display
                 const updateColor = (color) => {
                     preview.style.backgroundColor = color;
                     if (valueDisplay) {
@@ -164,12 +331,10 @@ class SettingsManager {
                     );
                 };
 
-                // Click preview to open color picker
                 preview.addEventListener('click', () => {
                     input.click();
                 });
 
-                // Update on color change
                 input.addEventListener('input', (e) => {
                     updateColor(e.target.value);
                 });
@@ -198,10 +363,29 @@ class SettingsManager {
         this.settings.colorPalette = newColors;
         this.saveSettings();
 
-        // Show success message
         if (window.notificationManager) {
             window.notificationManager.success('Settings saved successfully');
         }
+    }
+
+    updateColorPickers() {
+        const colorSettings = document.querySelectorAll('.color-setting');
+        const colors = this.settings.colorPalette;
+        
+        colorSettings.forEach(setting => {
+            const input = setting.querySelector('input[type="color"]');
+            const preview = setting.querySelector('.color-preview');
+            const valueDisplay = setting.querySelector('.color-value');
+            const colorKey = input?.getAttribute('data-setting');
+
+            if (input && preview && colorKey && colors[colorKey]) {
+                input.value = colors[colorKey];
+                preview.style.backgroundColor = colors[colorKey];
+                if (valueDisplay) {
+                    valueDisplay.textContent = colors[colorKey].toUpperCase();
+                }
+            }
+        });
     }
 
     kebabCase(str) {

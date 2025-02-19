@@ -34,7 +34,7 @@
 
 #todayBtn {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--light-text-color);
     border: none;
     padding: 0.5rem 1rem;
     border-radius: var(--border-radius);
@@ -73,7 +73,7 @@
     padding-bottom: 100%;
     border: 1px solid #eee;
     border-radius: var(--border-radius);
-    background: white;
+    background: transparent;
     z-index: 1;
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -141,8 +141,8 @@
 }
 
 .calendar-day.other-month {
-    color: #ccc;
-    background-color: #f9f9f9;
+    color: var(--text-color);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .modal-open .calendar-day {
