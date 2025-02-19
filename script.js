@@ -11,6 +11,7 @@ class DeadlineTracker {
         this.notificationManager = new NotificationManager();
         this.settingsManager = new SettingsManager();
         window.notificationManager = this.notificationManager;
+        this.dashboardManager = new DashboardManager();
     }
 
     initialize() {
@@ -175,10 +176,8 @@ class DeadlineTracker {
     initializeAdminMode() {
         const toggleBtn = document.getElementById('toggleAdminMode');
 
-        // Set initial state
         document.body.classList.toggle('admin-mode', this.isAdminMode);
 
-        // Add click handler
         toggleBtn.addEventListener('click', () => {
             this.isAdminMode = !this.isAdminMode;
             document.body.classList.toggle('admin-mode', this.isAdminMode);

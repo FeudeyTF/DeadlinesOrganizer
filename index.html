@@ -28,7 +28,7 @@
         </header>
 
         <div class="dashboard">
-            <div class="dashboard-item">
+            <div class="dashboard-item" data-position="0">
                 <div class="calendar-header">
                     <h2>Calendar</h2>
                     <div class="calendar-nav">
@@ -49,7 +49,7 @@
                 </div>
                 <div id="calendarDays" class="calendar-days"></div>
             </div>
-            <div class="dashboard-item">
+            <div class="dashboard-item" data-position="1">
                 <div class="header-with-controls">
                     <h2>Upcoming Deadlines</h2>
                     <button class="btn-filter" id="toggleFilters">
@@ -95,11 +95,11 @@
                 </div>
                 <div id="deadlinesList" class="deadlines-list"></div>
             </div>
-            <div class="dashboard-item">
+            <div class="dashboard-item" data-position="2">
                 <h2>Past Deadlines</h2>
                 <div id="pastDeadlinesList" class="deadlines-list"></div>
             </div>
-            <div class="dashboard-item">
+            <div class="dashboard-item" data-position="3">
                 <div class="header-with-controls">
                     <h2>Work Plan</h2>
                     <button id="planViewToggle" class="view-toggle" title="Toggle view">
@@ -228,7 +228,7 @@
                                 </div>
                             </div>
                             <div id="colorSettingsGrid" class="color-settings-grid">
-                                <!-- Color settings will be generated here -->
+                                <!-- Color settings will be here -->
                             </div>
                         </div>
                     </div>
@@ -236,14 +236,14 @@
                         <div class="settings-section">
                             <div class="settings-section-title">Planning Settings</div>
                             <div class="settings-section-description">Configure how the planning system works</div>
-                            <!-- Add planning settings here -->
+                            <!-- Planning settings here -->
                         </div>
                     </div>
                     <div class="settings-panel" data-panel="notifications">
                         <div class="settings-section">
                             <div class="settings-section-title">Notification Preferences</div>
                             <div class="settings-section-description">Manage how you receive notifications</div>
-                            <!-- Add notification settings here -->
+                            <!-- Notification settings here -->
                         </div>
                     </div>
                     <div class="settings-actions">
@@ -290,6 +290,7 @@
     </div>
 
     <script src="modules/UIManager.js"></script>
+    <script src="modules/DashboardManager.js"></script>
     <script src="modules/CalendarManager.js"></script>
     <script src="modules/DeadlineManager.js"></script>
     <script src="modules/FilterManager.js"></script>
