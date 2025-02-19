@@ -66,6 +66,20 @@ class SettingsManager {
                 secondaryText: '#919288',
                 dashboardItem: '#272822',
                 modalBackground: '#1E1F1C'
+            },
+            Coffee: {
+                primary: '#6F4E37',     // coffee brown
+                primaryDark: '#513726',  // dark roast
+                secondary: '#8B7355',    // mocha
+                accent: '#C4A484',       // coffee cream
+                warning: '#DAA520',      // golden brown
+                danger: '#800000',       // deep maroon
+                text: '#2C1810',         // dark coffee
+                secondaryText: '#5C4033', // milk chocolate
+                dashboardItem: '#FFF5E6', // creamy white
+                dashboardItemHover: '#FFE6CC',
+                dashboardItemActive: '#D2B48C',
+                modalBackground: '#FFF8DC' // cream
             }
         };
 
