@@ -3,7 +3,6 @@
 @use "sass:math";
 
 .modal {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -12,19 +11,22 @@
     background-color: rgba(0, 0, 0, 0);
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     opacity: 0;
-    pointer-events: none;
-    z-index: 3000;
+    visibility: hidden;
+    display: flex;
+    z-index: 999;
+    backdrop-filter: blur(0);
 
     &.active {
-        display: flex;
+        visibility: visible;
         background-color: rgba(0, 0, 0, 0.5);
         opacity: 1;
         pointer-events: all;
+        backdrop-filter: blur(2px);
 
         .modal-content {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
             opacity: 1;
         }
     }
@@ -39,9 +41,9 @@
         margin: 0;
         max-height: 90vh;
         overflow-y: auto;
-        transform: translateY(-20px);
+        transform: translateY(100vh) scale(0.95);
         opacity: 0;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
         z-index: 999;
 
         .title {

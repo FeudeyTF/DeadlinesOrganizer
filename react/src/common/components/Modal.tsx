@@ -45,11 +45,9 @@ export function Modal(props: ModalProps) {
     };
   }, [isOpen, handleEscape]);
 
-  if (!isOpen) return null;
-
   return (
     <div
-      className={classes(["modal active", className])}
+      className={classes(["modal", isOpen && "active", className])}
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
