@@ -1,0 +1,38 @@
+@use "../colors.scss";
+@use 'sass:color';
+@use "sass:math";
+
+.tags-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f5f6fa;
+    border-radius: colors.$border-radius;
+    min-height: 40px;
+
+    .tag-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: math.div(colors.$border-radius, 2);
+        cursor: pointer;
+        user-select: none;
+        background-color: colors.$color-bg;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: color.adjust(colors.$color-bg, $lightness: 5%);
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        span {
+            font-size: 0.875rem;
+        }
+    }
+}

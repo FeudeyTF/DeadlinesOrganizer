@@ -3,7 +3,7 @@ import { Button } from "./Button";
 import { classes } from "../functions";
 import { DefaultProps } from "../types";
 
-type ModalProps = {
+export type ModalProps = {
   onClose?: () => void;
   title: string;
   isOpen: boolean;

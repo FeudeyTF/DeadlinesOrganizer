@@ -1,4 +1,6 @@
 @use "../colors.scss";
+@use 'sass:color';
+@use "sass:math";
 
 .modal {
     display: none;
@@ -65,4 +67,44 @@
 
 body.modal-open {
     overflow: hidden;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-weight: 500;
+            color: colors.$text;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid colors.$grey;
+            border-radius: colors.$border-radius;
+            background-color: transparent;
+            color: inherit;
+
+            &::placeholder {
+                color: transparent;
+            }
+
+            &:focus {
+                border-color: colors.$primary;
+                box-shadow: 0 0 0 2px color.adjust(colors.$primary, $alpha: -0.7);
+            }
+
+            &:hover:not(:focus) {
+                border-color: colors.$light-grey;
+            }
+        }
+    }
 }

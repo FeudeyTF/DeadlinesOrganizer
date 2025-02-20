@@ -7,6 +7,7 @@
 @include meta.load-css("./components/ProgressBar.scss");
 @include meta.load-css("./components/Modal.scss");
 
-
+/* Modals */
+@include meta.load-css("./modals/AddDeadlineModal.scss");
 
 @include meta.load-css("./interfaces/DeadlinesOrganizer.scss");

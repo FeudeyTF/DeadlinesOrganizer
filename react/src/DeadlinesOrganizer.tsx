@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "./common/components/Button";
 import { DeadlineCard } from "./common/components/DeadlineCard";
-import { Modal } from "./common/components/Modal";
 import { Section } from "./common/components/Section";
+import { AddDeadlineModal } from "./common/modals/AddDeadlineModal";
 
 export default function DeadlinesOrganizer() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,15 +28,8 @@ export default function DeadlinesOrganizer() {
             endDate={new Date(2025, 1, 21)}
             color="bad"
             buttons={[
-              <Button
-                color="bad"
-                icon="trash"
-                circle
-              />,
-              <Button
-                icon="pen"
-                circle
-              />
+              <Button color="bad" icon="trash" circle />,
+              <Button icon="pen" circle />,
             ]}
           />
         </Section>
@@ -44,13 +37,17 @@ export default function DeadlinesOrganizer() {
         <Section title="Work Plan" />
       </div>
 
-      <Modal
+      <AddDeadlineModal
+        availableTags={[]}
+        onSubmit={() => {
+          console.log("Submitted add form");
+        }}
         isOpen={isModalOpen}
         title="Test"
         onClose={() => setIsModalOpen(false)}
       >
         <p>This is a test modal content</p>
-      </Modal>
+      </AddDeadlineModal>
     </div>
   );
 }
