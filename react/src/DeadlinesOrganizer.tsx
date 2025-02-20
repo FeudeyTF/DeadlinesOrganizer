@@ -3,9 +3,11 @@ import { Button } from "./common/components/Button";
 import { DeadlineCard } from "./common/components/DeadlineCard";
 import { Section } from "./common/components/Section";
 import { AddDeadlineModal } from "./common/modals/AddDeadlineModal";
+import { EditDeadlineModal } from "./common/modals/EditDeadlineModal";
 
 export default function DeadlinesOrganizer() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   return (
     <div className="container">
@@ -13,8 +15,11 @@ export default function DeadlinesOrganizer() {
         <h1>Course Deadline Tracker</h1>
         <div className="header-buttons">
           <Button content="Toggle Admin Mode" />
-          <Button content="Add New Deadline" />
-          <Button content="Manage Tags" onClick={() => setIsModalOpen(true)} />
+          <Button
+            content="Add New Deadline"
+            onClick={() => setIsAddModalOpen(true)}
+          />
+          <Button content="Manage Tags" />
         </div>
       </header>
 
@@ -29,7 +34,11 @@ export default function DeadlinesOrganizer() {
             color="bad"
             buttons={[
               <Button color="bad" icon="trash" circle />,
-              <Button icon="pen" circle />,
+              <Button
+                icon="pen"
+                circle
+                onClick={() => setIsEditModalOpen(true)}
+              />,
             ]}
           />
         </Section>
@@ -39,15 +48,31 @@ export default function DeadlinesOrganizer() {
 
       <AddDeadlineModal
         availableTags={[]}
-        onSubmit={() => {
-          console.log("Submitted add form");
+        onSubmit={(data) => {
+          console.log("Submitted add form ");
         }}
-        isOpen={isModalOpen}
+        isOpen={isAddModalOpen}
         title="Test"
-        onClose={() => setIsModalOpen(false)}
-      >
-        <p>This is a test modal content</p>
-      </AddDeadlineModal>
+        onClose={() => setIsAddModalOpen(false)}
+      />
+
+      <EditDeadlineModal
+        deadline={{
+          courseName: "sas",
+          taskName: "sas",
+          endDate: new Date(2025, 1, 21),
+          timeToDo: 1,
+          priority: "medium",
+          tags: [],
+        }}
+        availableTags={[]}
+        onSubmit={(data) => {
+          console.log("Submitted edit form ");
+        }}
+        isOpen={isEditModalOpen}
+        title="Test"
+        onClose={() => setIsEditModalOpen(false)}
+      />
     </div>
   );
 }

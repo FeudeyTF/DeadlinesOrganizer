@@ -3,21 +3,15 @@ import { Modal, ModalProps } from "../components/Modal";
 import { Button } from "../components/Button";
 import { Deadline } from "../types";
 
-type AddDeadlineModalProps = {
+type EditDeadlineModalProps = {
+  deadline: Deadline;
   onSubmit: (data: Deadline) => void;
   availableTags: Array<{ id: string; name: string }>;
 } & ModalProps;
 
-export function AddDeadlineModal(props: AddDeadlineModalProps) {
-  const { isOpen, onClose, onSubmit, availableTags } = props;
-  const [formData, setFormData] = useState<Deadline>({
-    courseName: "",
-    taskName: "",
-    endDate: new Date(),
-    timeToDo: 1,
-    priority: "medium",
-    tags: [],
-  });
+export function EditDeadlineModal(props: EditDeadlineModalProps) {
+  const { deadline, isOpen, onClose, onSubmit, availableTags } = props;
+  const [formData, setFormData] = useState<Deadline>(deadline);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +27,7 @@ export function AddDeadlineModal(props: AddDeadlineModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add New Deadline">
+    <Modal isOpen={isOpen} onClose={onClose} title="Edit Deadline">
       <form onSubmit={handleSubmit} className="modal-form">
         <div className="form-group">
           <label htmlFor="courseName">Course Name:</label>
@@ -116,7 +110,7 @@ export function AddDeadlineModal(props: AddDeadlineModalProps) {
           </div>
         </div>
 
-        <Button content="Save Deadline" onClick={handleSubmit} />
+        <Button content="Edit Deadline" onClick={handleSubmit} />
       </form>
     </Modal>
   );

@@ -8,3 +8,12 @@ export type DefaultProps = Partial<{
   id: string;
   style: CSSProperties;
 }>;
+
+export type Deadline = {
+  courseName: string;
+  taskName: string;
+  endDate: Date;
+  timeToDo: number;
+  priority: "high" | "medium" | "low";
+  tags: string[];
+};
