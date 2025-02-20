@@ -5,6 +5,8 @@
 @include meta.load-css("./components/Section.scss");
 @include meta.load-css("./components/DeadlineCard.scss");
 @include meta.load-css("./components/ProgressBar.scss");
+@include meta.load-css("./components/Modal.scss");
+
 
 
 @include meta.load-css("./interfaces/DeadlinesOrganizer.scss");

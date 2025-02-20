@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Button } from "./common/components/Button";
 import { DeadlineCard } from "./common/components/DeadlineCard";
+import { Modal } from "./common/components/Modal";
 import { Section } from "./common/components/Section";
 
-function DeadlinesOrganizer() {
+export default function DeadlinesOrganizer() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="container">
       <header>
@@ -10,7 +14,8 @@ function DeadlinesOrganizer() {
         <div className="header-buttons">
           <Button content="Toggle Admin Mode" />
           <Button content="Add New Deadline" />
-          <Button content="Manage Tags" />
+          <Button content="Manage Tags" 
+            onClick={() => setIsModalOpen(true)}/>
         </div>
       </header>
 
@@ -23,14 +28,30 @@ function DeadlinesOrganizer() {
             taskName="test123"
             endDate={new Date(2025, 1, 21)}
             color="bad"
-            buttons={[<Button />, <Button />]}
+            buttons={[
+              <Button
+                onClick={() => 
+                  <Modal isOpen={isModalOpen} title="Modal Title">
+                    <p>Modal content goes here</p>
+                  </Modal>
+                }
+              />,
+              <Button />,
+            ]}
           />
         </Section>
         <Section title="Past Deadlines" />
         <Section title="Work Plan" />
       </div>
+
+      <Modal 
+        isOpen={isModalOpen}
+        title="Test" 
+        onClose={() => setIsModalOpen(false)}
+      >
+        <p>This is a test modal content</p>
+      </Modal>
+
     </div>
   );
 }
-
-export default DeadlinesOrganizer;
