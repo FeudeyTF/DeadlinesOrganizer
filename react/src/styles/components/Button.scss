@@ -49,6 +49,10 @@ $bg-map: colors.$bg-map;
   align-items: center;
   gap: 0.5rem;
 
+  &-circle {
+    border-radius: 50%;
+  }
+
   &-icon-only {
     aspect-ratio: 1;
     padding: 0.6rem;

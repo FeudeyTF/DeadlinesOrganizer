@@ -13,6 +13,7 @@ type Props = Partial<{
   selected: boolean;
   verticalAlignContent: string;
   icon: IconName | [IconPrefix, IconName];
+  circle: boolean;
 }> & DefaultProps;
 
 export function Button(props: Props) {
@@ -26,6 +27,7 @@ export function Button(props: Props) {
     selected,
     verticalAlignContent,
     icon,
+    circle,
     ...rest
   } = props;
 
@@ -44,6 +46,7 @@ export function Button(props: Props) {
         color && typeof color === "string"
           ? `button-color-${color}`
           : "button-color-default",
+        circle && "button-circle",
         className,
       ])}
       onClick={(event) => {
