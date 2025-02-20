@@ -45,6 +45,8 @@
         z-index: 999;
 
         .title {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 1.5rem;
             color: colors.$text;
             font-size: 1.5rem;
@@ -55,13 +57,9 @@
     .close {
         height: 32px;
         width: 32px;
-        position: absolute;
-        right: 1rem;
-        top: 1rem;
         text-align: center;
         font-size: 1.5rem;
         padding: 10px;
-        margin: -10px;
     }
 }
 
