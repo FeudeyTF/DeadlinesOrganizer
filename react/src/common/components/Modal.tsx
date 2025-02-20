@@ -61,7 +61,7 @@ export function Modal(props: ModalProps) {
             {title}
           </h2>
         )}
-        <Button className="close" color="bad" onClick={onClose} content="×" />
+        <Button className="close" color="bad" onClick={onClose} icon="times"/>
         {children}
       </div>
     </div>

@@ -35,7 +35,7 @@ $bg-map: colors.$bg-map;
 
 .button {
   position: relative;
-  padding: 0.8rem 1.5rem;
+  padding: 0.6rem;
   margin-right: 2px;
   white-space: nowrap;
   outline: 0;
@@ -45,6 +45,19 @@ $bg-map: colors.$bg-map;
   transition: background-color 0.3s ease;
   user-select: none;
   -ms-user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &-icon-only {
+    aspect-ratio: 1;
+    padding: 0.6rem;
+    justify-content: center;
+  }
+
+  i {
+    font-size: 1em;
+  }
 
   &:last-child {
     margin-right: 0;

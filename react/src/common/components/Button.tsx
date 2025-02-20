@@ -1,5 +1,7 @@
 import { classes } from "../functions";
 import { DefaultProps } from "../types";
+import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type Props = Partial<{
   content: string;
@@ -10,6 +12,7 @@ type Props = Partial<{
   onClick: (e: any) => void;
   selected: boolean;
   verticalAlignContent: string;
+  icon: IconName | [IconPrefix, IconName];
 }> & DefaultProps;
 
 export function Button(props: Props) {
@@ -22,6 +25,7 @@ export function Button(props: Props) {
     onClick,
     selected,
     verticalAlignContent,
+    icon,
     ...rest
   } = props;
 
@@ -32,6 +36,7 @@ export function Button(props: Props) {
         fluid && "button-fluid",
         disabled && "button-disabled",
         selected && "button-selected",
+        icon && !content && "button-icon-only",
         verticalAlignContent && "button-flex",
         verticalAlignContent && fluid && "button-flex-fluid",
         verticalAlignContent &&
@@ -48,6 +53,11 @@ export function Button(props: Props) {
       }}
       {...rest}
     >
+      {icon && (
+        <FontAwesomeIcon 
+          icon={typeof icon === 'string' ? ['fas', icon] : icon} 
+        />
+      )}
       {content}
     </div>
   );

@@ -30,6 +30,9 @@ export default function DeadlinesOrganizer() {
             color="bad"
             buttons={[
               <Button
+              color="bad"
+                icon="trash"
+                content="delete"
                 onClick={() => 
                   <Modal isOpen={isModalOpen} title="Modal Title">
                     <p>Modal content goes here</p>
