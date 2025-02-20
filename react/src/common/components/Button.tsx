@@ -28,17 +28,17 @@ export function Button(props: Props) {
   return (
     <div
       className={classes([
-        "Button",
-        fluid && "Button--fluid",
-        disabled && "Button--disabled",
-        selected && "Button--selected",
-        verticalAlignContent && "Button--flex",
-        verticalAlignContent && fluid && "Button--flex--fluid",
+        "button",
+        fluid && "button-fluid",
+        disabled && "button-disabled",
+        selected && "button-selected",
+        verticalAlignContent && "button-flex",
+        verticalAlignContent && fluid && "button-flex-fluid",
         verticalAlignContent &&
-          `Button--verticalAlignContent--${verticalAlignContent}`,
+          `button-verticalAlignContent-${verticalAlignContent}`,
         color && typeof color === "string"
-          ? `Button--color--${color}`
-          : "Button--color--default",
+          ? `button-color-${color}`
+          : "button-color-default",
         className,
       ])}
       onClick={(event) => {
