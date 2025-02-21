@@ -1,40 +1,50 @@
 import { ReactNode } from "react";
-import { DefaultProps } from "../types";
+import { Deadline, DefaultProps } from "../types";
 import { classes } from "../functions";
 import { ProgressBar } from "./ProgressBar";
 
 type DeadlineCardProps = {
-  name: string;
-  taskName: string;
+  deadline: Deadline;
   buttons?: ReactNode;
-  timeToDo: number;
-  endDate: Date;
   color?: string;
 } & DefaultProps;
 
 export function DeadlineCard(props: DeadlineCardProps) {
-  const { name, taskName, buttons, endDate, timeToDo, color } = props;
+  const { deadline, buttons, color } = props;
 
   return (
     <div className={classes(["deadline-card", "deadline-card-color-" + color])}>
       <div className="header">
         <div className="right">
           <div className="title">
-            {name} - {taskName}
+            {deadline.courseName} - {deadline.taskName}
           </div>
           {buttons && <div className="actions">{buttons}</div>}
         </div>
-        <div className="date">{endDate.toLocaleDateString()}</div>
+        <div className="date">{new Date(deadline.endDate).toLocaleDateString()}</div>
       </div>
       <div>
       <div className="field" style={{ fontSize: 16 }}>
-        Estimated time: {formatTimeToDo(timeToDo)}
+        Estimated time: {formatTimeToDo(deadline.timeToDo)}
       </div>
-      <div className="field">{getRemainingTime(endDate)}</div>
+      <div className="field">{getRemainingTime(new Date(deadline.endDate))}</div>
       </div>
-      <ProgressBar progress={99}/>
+      <ProgressBar progress={generateDeadlineProgress(deadline.createdDate, deadline.endDate)}/>
     </div>
   );
+}
+
+function generateDeadlineProgress(createdDate: string, endDate: string): number {
+  const end = new Date(endDate);
+  const created = new Date(createdDate);
+  const total = end.getTime() - created.getTime();
+  const remaining = end.getTime() - new Date().getTime();
+  
+  if (remaining <= 0) return 100;
+  if (total <= 0) return 0;
+  
+  const progress = ((total - remaining) / total) * 100;
+  return Math.min(Math.max(progress, 0), 100);
 }
 
 const getRemainingTime = (endDate: Date) => {

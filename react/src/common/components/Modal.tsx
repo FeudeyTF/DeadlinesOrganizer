@@ -5,7 +5,7 @@ import { DefaultProps } from "../types";
 
 export type ModalProps = {
   onClose?: () => void;
-  title: string;
+  title?: string;
   isOpen: boolean;
 } & DefaultProps;
 

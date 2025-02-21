@@ -9,11 +9,43 @@ export type DefaultProps = Partial<{
   style: CSSProperties;
 }>;
 
+export enum Priority {
+  High,
+  Medium,
+  Low
+}
+
 export type Deadline = {
+  id: number;
   courseName: string;
   taskName: string;
-  endDate: Date;
+  createdDate: string;
+  endDate: string;
   timeToDo: number;
-  priority: "high" | "medium" | "low";
+  priority: Priority;
   tags: string[];
 };
+
+export function stringToPriority(value: string): Priority {
+  switch (value.toLowerCase()) {
+    case 'high':
+      return Priority.High;
+    case 'medium':
+      return Priority.Medium;
+    case 'low':
+      return Priority.Low;
+    default:
+      throw new Error(`Invalid priority value: ${value}`);
+  }
+}
+
+export function priorityToColor(priority: Priority): string {
+  switch (priority) {
+    case Priority.High:
+      return '#ff4d4d';
+    case Priority.Medium:
+      return '#ffa64d';
+    case Priority.Low:
+      return '#4da6ff';
+  }
+}
