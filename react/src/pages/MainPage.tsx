@@ -1,28 +1,29 @@
-import { Button } from "./common/components/Button";
-import { DeadlineCard } from "./common/components/DeadlineCard";
-import { Section } from "./common/components/Section";
-import { AddDeadlineModal } from "./common/modals/AddDeadlineModal";
-import { EditDeadlineModal } from "./common/modals/EditDeadlineModal";
-import { DeadlineManager } from "./common/managers/DeadlineManager";
-import { Deadline } from "./common/types";
+import { Button } from "../common/components/Button";
+import { DeadlineCard } from "../common/components/DeadlineCard";
+import { Section } from "../common/components/Section";
+import { AddDeadlineModal } from "../common/modals/AddDeadlineModal";
+import { EditDeadlineModal } from "../common/modals/EditDeadlineModal";
+import { DeadlineManager } from "../common/managers/DeadlineManager";
+import { Deadline } from "../common/types";
 import { useState } from "react";
-import { Modal } from "./common/components/Modal";
+import { Modal } from "../common/components/Modal";
 
-export default function DeadlinesOrganizer() {
+const deadlineManager = new DeadlineManager();
+
+export default function MainPage() {
+  const [deadlines, setDeadlines] = useState(deadlineManager.deadlines);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingDeadline, setEditingDeadline] = useState<Deadline | null>(null);
-  const deadlineManager = new DeadlineManager();
 
   function openEditDeadlineModal(deadline: Deadline) {
     setEditingDeadline(deadline);
-    console.log(editingDeadline);
   }
 
   function closeEditDeadlineModal(deadline: Deadline | null) {
     if (editingDeadline && deadline) {
       deadlineManager.updateDeadline(editingDeadline.id, deadline);
+      setDeadlines([...deadlineManager.deadlines]);
     }
-    console.log(editingDeadline);
     setEditingDeadline(null);
   }
 
@@ -33,6 +34,7 @@ export default function DeadlinesOrganizer() {
   function closeAddDeadlineModal(deadline: Deadline | null) {
     if (deadline) {
       deadlineManager.addDeadline(deadline);
+      setDeadlines([...deadlineManager.deadlines]);
     }
     setIsAddModalOpen(false);
   }
@@ -47,30 +49,34 @@ export default function DeadlinesOrganizer() {
           <Button content="Manage Tags" />
         </div>
       </header>
-
       <div className="dashboard">
         <Section title="Calendar" />
         <Section title="Upcoming Deadlines">
-          {deadlineManager.deadlines.map((deadline) => (
-            <DeadlineCard
-              key={deadline.id}
-              deadline={deadline}
-              color="red"
-              buttons={[
-                <Button
-                  color="bad"
-                  icon="trash"
-                  circle
-                  onClick={() => deadlineManager.deleteDeadline(deadline.id)}
-                />,
-                <Button
-                  icon="pen"
-                  circle
-                  onClick={() => openEditDeadlineModal(deadline)}
-                />,
-              ]}
-            />
-          ))}
+          <div className="deadlines-list">
+            {deadlines.map((deadline) => (
+              <DeadlineCard
+                key={deadline.id}
+                deadline={deadline}
+                color="red"
+                buttons={[
+                  <Button
+                    color="bad"
+                    icon="trash"
+                    circle
+                    onClick={() => {
+                      deadlineManager.deleteDeadline(deadline.id);
+                      setDeadlines([...deadlineManager.deadlines]);
+                    }}
+                  />,
+                  <Button
+                    icon="pen"
+                    circle
+                    onClick={() => openEditDeadlineModal(deadline)}
+                  />,
+                ]}
+              />
+            ))}
+          </div>
         </Section>
         <Section title="Past Deadlines" />
         <Section title="Work Plan" />
@@ -83,7 +89,7 @@ export default function DeadlinesOrganizer() {
       >
         <AddDeadlineModal availableTags={[]} onSubmit={closeAddDeadlineModal} />
       </Modal>
-      
+
       <Modal
         isOpen={editingDeadline != null}
         onClose={() => closeEditDeadlineModal(null)}

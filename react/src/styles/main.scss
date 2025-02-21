@@ -10,4 +10,7 @@
 /* Modals */
 @include meta.load-css("./modals/AddDeadlineModal.scss");
 
+/* Pages */
+@include meta.load-css("./pages/MainPage.scss");
+
 @include meta.load-css("./interfaces/DeadlinesOrganizer.scss");

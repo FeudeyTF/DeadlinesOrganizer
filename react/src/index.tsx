@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import '../src/styles/main.scss';
-import DeadlinesOrganizer from './DeadlinesOrganizer';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import MainPage from './pages/MainPage';
 
 library.add(fas)
 
@@ -14,6 +14,6 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <DeadlinesOrganizer />
+    <MainPage />
   </React.StrictMode>
 );
