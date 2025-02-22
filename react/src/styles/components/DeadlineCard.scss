@@ -60,6 +60,21 @@
             margin-bottom: 0.5em;
         }
     }
+
+    &.past-deadline {    
+        opacity: 0.7;
+        background-color: #f8f9fa;
+        border-left-color: #adb5bd;
+
+        .title {
+            text-decoration: line-through;
+            color: rgba(colors.$text, 0.6);
+        }
+
+        .date {
+            color: rgba(colors.$text, 0.6);
+        }
+    }
 }
 
 @each $color-name, $color-value in colors.$bg-map {

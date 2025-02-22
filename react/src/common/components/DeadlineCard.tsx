@@ -10,10 +10,13 @@ type DeadlineCardProps = {
 } & DefaultProps;
 
 export function DeadlineCard(props: DeadlineCardProps) {
-  const { deadline, buttons, color } = props;
+  const { deadline, buttons, color, className, ...rest } = props;
 
   return (
-    <div className={classes(["deadline-card", "deadline-card-color-" + color])}>
+    <div
+      className={classes(["deadline-card", color && "deadline-card-color-" + color, className])}
+      {...rest}
+    >
       <div className="header">
         <div className="right">
           <div className="title">

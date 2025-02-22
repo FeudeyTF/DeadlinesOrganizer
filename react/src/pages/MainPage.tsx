@@ -56,6 +56,14 @@ export default function MainPage() {
     return matchesSearch && matchesPriority && matchesTags;
   });
 
+  const now = new Date();
+  const upcomingDeadlines = filteredDeadlines.filter(
+    (d) => new Date(d.endDate) > now
+  );
+  const pastDeadlines = filteredDeadlines.filter(
+    (d) => new Date(d.endDate) <= now
+  );
+
   function openEditDeadlineModal(deadline: Deadline) {
     setEditingDeadline(deadline);
   }
@@ -179,8 +187,8 @@ export default function MainPage() {
             </div>
           </div>
           <div className="deadlines-list">
-            {filteredDeadlines.length > 0 ? (
-              filteredDeadlines.map((deadline) => (
+            {upcomingDeadlines.length > 0 ? (
+              upcomingDeadlines.map((deadline) => (
                 <DeadlineCard
                   key={deadline.id}
                   deadline={deadline}
@@ -213,11 +221,23 @@ export default function MainPage() {
           </div>
         </Section>
         <Section title="Past Deadlines">
-          <WarningMessage
-            icon="clock-rotate-left"
-            name="No past deadlines"
-            description="Completed deadlines will appear here after their due date."
-          />
+          <div className="deadlines-list">
+            {pastDeadlines.length > 0 ? (
+              pastDeadlines.map((deadline) => (
+                <DeadlineCard
+                  key={deadline.id}
+                  deadline={deadline}
+                  className="past-deadline"
+                />
+              ))
+            ) : (
+              <WarningMessage
+                icon="clock-rotate-left"
+                name="No past deadlines"
+                description="Completed deadlines will appear here after their due date."
+              />
+            )}
+          </div>
         </Section>
         <Section title="Work Plan" />
       </div>
