@@ -63,7 +63,10 @@ export function EditDeadlineModal(props: EditDeadlineModalProps) {
           step="0.5"
           value={resultDeadline.timeToDo}
           onChange={(e) =>
-            setResultDeadline({ ...resultDeadline, timeToDo: Number(e.target.value) })
+            setResultDeadline({
+              ...resultDeadline,
+              timeToDo: Number(e.target.value),
+            })
           }
           required
         />
@@ -72,18 +75,18 @@ export function EditDeadlineModal(props: EditDeadlineModalProps) {
       <div className="form-group">
         <label>Priority:</label>
         <select
-          value={resultDeadline.priority}
-          onChange={(e) =>
+          value={deadline.priority}
+          onChange={(e) => {
             setResultDeadline({
               ...resultDeadline,
               priority: stringToPriority(e.target.value),
-            })
-          }
+            });
+          }}
           required
         >
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
         </select>
       </div>
 
@@ -99,7 +102,7 @@ export function EditDeadlineModal(props: EditDeadlineModalProps) {
                   const newTags = e.target.checked
                     ? [...resultDeadline.tags, tag.name]
                     : resultDeadline.tags.filter((t) => t !== tag.name);
-                  setResultDeadline({...resultDeadline, tags: newTags });
+                  setResultDeadline({ ...resultDeadline, tags: newTags });
                 }}
               />
               <span>{tag.name}</span>

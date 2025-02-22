@@ -4,7 +4,7 @@ import { Section } from "../common/components/Section";
 import { AddDeadlineModal } from "../common/modals/AddDeadlineModal";
 import { EditDeadlineModal } from "../common/modals/EditDeadlineModal";
 import { DeadlineManager } from "../common/managers/DeadlineManager";
-import { Deadline, Tag } from "../common/types";
+import { Deadline, priorityToColor, Tag } from "../common/types";
 import { useState } from "react";
 import { Modal } from "../common/components/Modal";
 import { TagsManager } from "../common/managers/TagsManager";
@@ -86,7 +86,7 @@ export default function MainPage() {
               <DeadlineCard
                 key={deadline.id}
                 deadline={deadline}
-                color="red"
+                color={priorityToColor(deadline.priority)}
                 buttons={[
                   <Button
                     color="bad"

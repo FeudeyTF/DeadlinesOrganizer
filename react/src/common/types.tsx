@@ -10,9 +10,9 @@ export type DefaultProps = Partial<{
 }>;
 
 export enum Priority {
-  High,
-  Medium,
-  Low
+  High = "High",
+  Medium = "Medium",
+  Low = "Low"
 }
 
 export type Deadline = {
@@ -42,11 +42,11 @@ export function stringToPriority(value: string): Priority {
 export function priorityToColor(priority: Priority): string {
   switch (priority) {
     case Priority.High:
-      return '#ff4d4d';
+      return 'bad';
     case Priority.Medium:
-      return '#ffa64d';
+      return 'average';
     case Priority.Low:
-      return '#4da6ff';
+      return 'good';
   }
 }
 

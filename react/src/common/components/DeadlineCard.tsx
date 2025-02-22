@@ -21,28 +21,40 @@ export function DeadlineCard(props: DeadlineCardProps) {
           </div>
           {buttons && <div className="actions">{buttons}</div>}
         </div>
-        <div className="date">{new Date(deadline.endDate).toLocaleDateString()}</div>
+        <div className="date">
+          {new Date(deadline.endDate).toLocaleDateString()}
+        </div>
       </div>
       <div>
-      <div className="field" style={{ fontSize: 16 }}>
-        Estimated time: {formatTimeToDo(deadline.timeToDo)}
+        <div className="field" style={{ fontSize: 16 }}>
+          Estimated time: {formatTimeToDo(deadline.timeToDo)}
+        </div>
+        <div className="field">
+          {getRemainingTime(new Date(deadline.endDate))}
+        </div>
       </div>
-      <div className="field">{getRemainingTime(new Date(deadline.endDate))}</div>
-      </div>
-      <ProgressBar progress={generateDeadlineProgress(deadline.createdDate, deadline.endDate)}/>
+      <ProgressBar
+        progress={generateDeadlineProgress(
+          deadline.createdDate,
+          deadline.endDate
+        )}
+      />
     </div>
   );
 }
 
-function generateDeadlineProgress(createdDate: string, endDate: string): number {
+function generateDeadlineProgress(
+  createdDate: string,
+  endDate: string
+): number {
   const end = new Date(endDate);
   const created = new Date(createdDate);
   const total = end.getTime() - created.getTime();
   const remaining = end.getTime() - new Date().getTime();
-  
+
   if (remaining <= 0) return 100;
   if (total <= 0) return 0;
-  
+
   const progress = ((total - remaining) / total) * 100;
   return Math.min(Math.max(progress, 0), 100);
 }
