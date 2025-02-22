@@ -8,6 +8,7 @@
 @include meta.load-css("./components/Modal.scss");
 @include meta.load-css("./components/TagField.scss");
 @include meta.load-css("./components/WarningMessage.scss");
+@include meta.load-css("./components/Calendar.scss");
 
 /* Modals */
 @include meta.load-css("./modals/AddDeadlineModal.scss");

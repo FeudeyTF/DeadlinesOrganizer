@@ -12,6 +12,7 @@ import { ManageTagsModal } from "../common/modals/ManageTagsModal";
 import { WarningMessage } from "../common/components/WarningMessage";
 import { classes } from "../common/functions";
 import { TagField } from "../common/components/TagField";
+import { Calendar } from "../common/components/Calendar";
 
 const deadlineManager = new DeadlineManager();
 const tagsManager = new TagsManager();
@@ -120,7 +121,10 @@ export default function MainPage() {
         </div>
       </header>
       <div className="dashboard">
-        <Section title="Calendar" />
+        <Section title="Calendar">
+          
+        <Calendar deadlines={deadlineManager.deadlines} />
+          </Section>
         <Section
           title="Upcoming Deadlines"
           headerButtons={

@@ -1,0 +1,204 @@
+@use "../colors.scss";
+
+.calendar {
+  padding: 1rem;
+  border-radius: colors.$border-radius;
+  box-shadow: colors.$shadow;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+
+  h2 {
+    flex: 1;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: colors.$text;
+  }
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  padding: 0.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-weight: 600;
+  padding: 0.25rem;
+  color: colors.fg(colors.$grey);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.calendar-cell {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  border: 1px solid #eee;
+  border-radius: colors.$border-radius;
+  background: transparent;
+  z-index: 1;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  .cell-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &:hover {
+    z-index: 10; // Bring hovered cell to front
+    transform: translateY(-1px);
+    box-shadow: colors.$shadow;
+  }
+
+  &.empty {
+    background: rgba(0, 0, 0, 0.1);
+
+    .day-number {
+      color: colors.fg(colors.$grey);
+    }
+  }
+
+  &.today {
+    background: colors.fg(colors.$primary);
+    border-color: colors.$primary;
+
+    .day-number {
+      color: colors.$white;
+      font-weight: 600;
+    }
+  }
+}
+
+.day-number {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: colors.$text;
+  margin-bottom: auto;
+}
+
+.deadline-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: auto;
+  justify-content: flex-end;
+  padding: 0.25rem;
+}
+
+.deadline-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+
+  @each $color-name, $color-value in colors.$bg-map {
+    &.deadline-#{$color-name} {
+      background: $color-value;
+    }
+  }
+
+  &:hover {
+    transform: scale(1.3);
+  }
+}
+
+.deadline-popup {
+  position: fixed;
+  z-index: 100;
+  background: colors.$white;
+  border: 1px solid colors.bg(colors.$grey);
+  border-radius: colors.$border-radius;
+  padding: 0.75rem;
+  min-width: 250px;
+  box-shadow: colors.$shadow;
+  pointer-events: auto;
+}
+
+.deadline-item {
+  padding: 0.75rem;
+  margin: 0.25rem 0;
+  border-radius: colors.$border-radius;
+  background: colors.fg(colors.$secondary);
+
+  &:not(:last-child) {
+    border-bottom: 1px solid colors.bg(colors.$grey);
+  }
+
+  .deadline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .deadline-time {
+    color: colors.fg(colors.$grey);
+    font-weight: 500;
+  }
+
+  .deadline-priority {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    background: colors.bg(colors.$grey);
+    color: colors.$white;
+  }
+
+  .deadline-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    color: colors.$text;
+  }
+
+  .deadline-subtitle {
+    font-size: 0.8rem;
+    color: colors.fg(colors.$grey);
+    margin-bottom: 0.5rem;
+  }
+
+  .deadline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .deadline-tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    background: colors.bg(colors.$primary);
+    color: colors.$white;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  @each $color-name, $color-value in colors.$bg-map {
+    &.deadline-#{$color-name} .deadline-priority {
+      background: $color-value;
+    }
+  }
+}
