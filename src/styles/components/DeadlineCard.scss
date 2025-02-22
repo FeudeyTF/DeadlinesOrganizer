@@ -44,6 +44,20 @@
         margin-left: 1rem;
     }
 
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        .tag {
+            background-color: colors.$primary;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+        }
+    }
+
     .info {
         display: flex;
         justify-content: space-between;

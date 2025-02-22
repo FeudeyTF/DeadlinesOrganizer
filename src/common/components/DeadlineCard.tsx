@@ -28,6 +28,15 @@ export function DeadlineCard(props: DeadlineCardProps) {
           {new Date(deadline.endDate).toLocaleDateString()}
         </div>
       </div>
+      {deadline.tags && deadline.tags.length > 0 && (
+        <div className="tags">
+          {deadline.tags.map((tag, index) => (
+            <span key={index} className="tag">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
       <div>
         <div className="field" style={{ fontSize: 16 }}>
           Estimated time: {formatTimeToDo(deadline.timeToDo)}
