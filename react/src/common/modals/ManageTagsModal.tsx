@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Tag } from "../types";
 import { Button } from "../components/Button";
 import { TagField } from "../components/TagField";
+import { WarningMessage } from "../components/WarningMessage";
 
 type ManageTagsModalProps = {
   onTagDelete: (tag: Tag) => void;
@@ -32,9 +33,15 @@ export function ManageTagsModal(props: ManageTagsModalProps) {
   return (
     <>
       <div className="tags-list">
-        {tags.map((tag) => (
-          <TagField tag={tag} onTagDelete={onTagDelete} />
-        ))}
+        {tags.length > 0 ? (
+          tags.map((tag) => <TagField tag={tag} onTagDelete={onTagDelete} />)
+        ) : (
+          <WarningMessage
+            icon="tags"
+            name="No tags created yet"
+            description="Create your first tag using the form below to start organizing your deadlines."
+          />
+        )}
       </div>
       <form onSubmit={handleSubmit} className="modal-form">
         <div className="form-group">

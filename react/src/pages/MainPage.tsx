@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Modal } from "../common/components/Modal";
 import { TagsManager } from "../common/managers/TagsManager";
 import { ManageTagsModal } from "../common/modals/ManageTagsModal";
+import { WarningMessage } from "../common/components/WarningMessage";
 
 const deadlineManager = new DeadlineManager();
 const tagsManager = new TagsManager();
@@ -60,7 +61,7 @@ export default function MainPage() {
       setTags([...tagsManager.tags]);
     }
   }
-  
+
   function handleTagDelete(tag: Tag) {
     console.log(tag);
     tagsManager.deleteTag(tag.id);
@@ -106,7 +107,13 @@ export default function MainPage() {
             ))}
           </div>
         </Section>
-        <Section title="Past Deadlines" />
+        <Section title="Past Deadlines">
+          <WarningMessage
+            icon="clock-rotate-left"
+            name="No past deadlines"
+            description="Completed deadlines will appear here after their due date."
+          />
+        </Section>
         <Section title="Work Plan" />
       </div>
 
