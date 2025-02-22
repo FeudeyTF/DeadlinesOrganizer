@@ -24,7 +24,7 @@ export function DeadlinePlanner(props: DeadlinePlannerProps) {
   const [warnings, setWarnings] = useState<ScheduleWarning[]>([]);
   const MAX_HOURS_PER_DAY = 8;
 
-  function calculatePlan() {
+  useEffect(() => {
     const currentWarnings: ScheduleWarning[] = [];
     const validDeadlines = deadlines.filter((d) => {
       if (!validateDeadline(d)) {
@@ -117,11 +117,7 @@ export function DeadlinePlanner(props: DeadlinePlannerProps) {
 
     setWarnings(currentWarnings);
     setPlannedDays(plan.sort((a, b) => a.date.getTime() - b.date.getTime()));
-  }
-
-  useEffect(() => {
-    calculatePlan();
-  });
+  }, [deadlines]);
 
   return (
     <div className="planning-container">
