@@ -82,29 +82,37 @@ export default function MainPage() {
         <Section title="Calendar" />
         <Section title="Upcoming Deadlines">
           <div className="deadlines-list">
-            {deadlines.map((deadline) => (
-              <DeadlineCard
-                key={deadline.id}
-                deadline={deadline}
-                color={priorityToColor(deadline.priority)}
-                buttons={[
-                  <Button
-                    color="bad"
-                    icon="trash"
-                    circle
-                    onClick={() => {
-                      deadlineManager.deleteDeadline(deadline.id);
-                      setDeadlines([...deadlineManager.deadlines]);
-                    }}
-                  />,
-                  <Button
-                    icon="pen"
-                    circle
-                    onClick={() => openEditDeadlineModal(deadline)}
-                  />,
-                ]}
+            {deadlines.length > 0 ? (
+              deadlines.map((deadline) => (
+                <DeadlineCard
+                  key={deadline.id}
+                  deadline={deadline}
+                  color={priorityToColor(deadline.priority)}
+                  buttons={[
+                    <Button
+                      color="bad"
+                      icon="trash"
+                      circle
+                      onClick={() => {
+                        deadlineManager.deleteDeadline(deadline.id);
+                        setDeadlines([...deadlineManager.deadlines]);
+                      }}
+                    />,
+                    <Button
+                      icon="pen"
+                      circle
+                      onClick={() => openEditDeadlineModal(deadline)}
+                    />,
+                  ]}
+                />
+              ))
+            ) : (
+              <WarningMessage
+                icon="filter-circle-xmark"
+                name="No matching deadlines found"
+                description="Try adjusting your filters or adding new deadlines."
               />
-            ))}
+            )}
           </div>
         </Section>
         <Section title="Past Deadlines">

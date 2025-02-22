@@ -43,10 +43,7 @@ export function DeadlineCard(props: DeadlineCardProps) {
   );
 }
 
-function generateDeadlineProgress(
-  createdDate: string,
-  endDate: string
-): number {
+function generateDeadlineProgress(createdDate: string, endDate: string) {
   const end = new Date(endDate);
   const created = new Date(createdDate);
   const total = end.getTime() - created.getTime();

@@ -1,7 +1,7 @@
 import { classes } from "../functions";
 import { DefaultProps } from "../types";
-import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconName, IconPrefix } from "@fortawesome/fontawesome-common-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = Partial<{
   content: string;
@@ -14,7 +14,8 @@ type Props = Partial<{
   verticalAlignContent: string;
   icon: IconName | [IconPrefix, IconName];
   circle: boolean;
-}> & DefaultProps;
+}> &
+  DefaultProps;
 
 export function Button(props: Props) {
   const {
@@ -57,8 +58,8 @@ export function Button(props: Props) {
       {...rest}
     >
       {icon && (
-        <FontAwesomeIcon 
-          icon={typeof icon === 'string' ? ['fas', icon] : icon} 
+        <FontAwesomeIcon
+          icon={typeof icon === "string" ? ["fas", icon] : icon}
         />
       )}
       {content}

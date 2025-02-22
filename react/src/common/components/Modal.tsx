@@ -57,7 +57,12 @@ export function Modal(props: ModalProps) {
         {title && (
           <h2 className="title" id="modal-title">
             {title}
-            <Button className="close" color="bad" onClick={onClose} icon="times"/>
+            <Button
+              className="close"
+              color="bad"
+              onClick={onClose}
+              icon="times"
+            />
           </h2>
         )}
         {children}

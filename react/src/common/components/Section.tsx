@@ -10,11 +10,18 @@ type SectionProps = Partial<{
 
 export function Section(props: SectionProps) {
   const { title, headerButtons, className, children } = props;
-  return <div className={classes(["Section", className])}>
-    <div className={classes(["Section--title", headerButtons ? "with--buttons" : ""])}>
-      {title}
-      {headerButtons}
+  return (
+    <div className={classes(["Section", className])}>
+      <div
+        className={classes([
+          "Section--title",
+          headerButtons ? "with--buttons" : "",
+        ])}
+      >
+        {title}
+        {headerButtons}
+      </div>
+      {children}
     </div>
-    {children}
-  </div>;
+  );
 }
