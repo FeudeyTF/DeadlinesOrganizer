@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Button } from "../components/Button";
 import { Deadline, stringToPriority, Tag } from "../types";
+import { TagField } from "../components/TagField";
 
 type EditDeadlineModalProps = {
   deadline: Deadline;
   onSubmit: (data: Deadline) => void;
-  availableTags: Tag[];
+  tags: Tag[];
 };
 
 export function EditDeadlineModal(props: EditDeadlineModalProps) {
-  const { deadline, onSubmit, availableTags } = props;
+  const { deadline, onSubmit, tags } = props;
   const [resultDeadline, setResultDeadline] = useState<Deadline>(deadline);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -93,20 +94,18 @@ export function EditDeadlineModal(props: EditDeadlineModalProps) {
       <div className="form-group">
         <label>Tags:</label>
         <div className="tags-select">
-          {availableTags.map((tag) => (
-            <label key={tag.id} className="tag-checkbox">
-              <input
-                type="checkbox"
-                checked={resultDeadline?.tags.includes(tag.name)}
-                onChange={(e) => {
-                  const newTags = e.target.checked
-                    ? [...resultDeadline.tags, tag.name]
-                    : resultDeadline.tags.filter((t) => t !== tag.name);
-                  setResultDeadline({ ...resultDeadline, tags: newTags });
-                }}
-              />
-              <span>{tag.name}</span>
-            </label>
+          {tags.map((tag) => (
+            <TagField
+              key={tag.id}
+              tag={tag}
+              disabled={!resultDeadline.tags.includes(tag.name)}
+              onTagClick={(tag) => {
+                const newTags = !resultDeadline.tags.includes(tag.name)
+                  ? [...resultDeadline.tags, tag.name]
+                  : resultDeadline.tags.filter((t) => t !== tag.name);
+                setResultDeadline({ ...resultDeadline, tags: newTags });
+              }}
+            />
           ))}
         </div>
       </div>

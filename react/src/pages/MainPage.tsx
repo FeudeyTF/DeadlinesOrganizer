@@ -60,7 +60,7 @@ export default function MainPage() {
   const upcomingDeadlines = filteredDeadlines.filter(
     (d) => new Date(d.endDate) > now
   );
-  const pastDeadlines = filteredDeadlines.filter(
+  const pastDeadlines = deadlines.filter(
     (d) => new Date(d.endDate) <= now
   );
 
@@ -247,7 +247,7 @@ export default function MainPage() {
         onClose={() => closeAddDeadlineModal(null)}
         title="Add New Deadline"
       >
-        <AddDeadlineModal availableTags={[]} onSubmit={closeAddDeadlineModal} />
+        <AddDeadlineModal tags={tagsManager.tags} onSubmit={closeAddDeadlineModal} />
       </Modal>
 
       <Modal
@@ -258,7 +258,7 @@ export default function MainPage() {
         {editingDeadline && (
           <EditDeadlineModal
             deadline={editingDeadline}
-            availableTags={tagsManager.tags}
+            tags={tagsManager.tags}
             onSubmit={closeEditDeadlineModal}
           />
         )}

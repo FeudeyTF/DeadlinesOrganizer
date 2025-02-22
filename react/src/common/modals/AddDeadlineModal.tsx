@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Button } from "../components/Button";
-import { Deadline, Priority, stringToPriority } from "../types";
+import { Deadline, Priority, stringToPriority, Tag } from "../types";
+import { TagField } from "../components/TagField";
 
 type AddDeadlineModalProps = {
   onSubmit: (data: Deadline) => void;
-  availableTags: Array<{ id: string; name: string }>;
+  tags: Tag[];
 };
 
 const initialDeadline: Deadline = {
@@ -19,7 +20,7 @@ const initialDeadline: Deadline = {
 };
 
 export function AddDeadlineModal(props: AddDeadlineModalProps) {
-  const { onSubmit, availableTags } = props;
+  const { onSubmit, tags } = props;
   const [deadline, setDeadline] = useState<Deadline>(initialDeadline);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -101,20 +102,18 @@ export function AddDeadlineModal(props: AddDeadlineModalProps) {
       <div className="form-group">
         <label>Tags:</label>
         <div className="tags-select">
-          {availableTags.map((tag) => (
-            <label key={tag.id} className="tag-checkbox">
-              <input
-                type="checkbox"
-                checked={deadline.tags.includes(tag.id)}
-                onChange={(e) => {
-                  const newTags = e.target.checked
-                    ? [...deadline.tags, tag.id]
-                    : deadline.tags.filter((t) => t !== tag.id);
-                  setDeadline({ ...deadline, tags: newTags });
-                }}
-              />
-              <span>{tag.name}</span>
-            </label>
+          {tags.map((tag) => (
+            <TagField
+              key={tag.id}
+              tag={tag}
+              disabled={!deadline.tags.includes(tag.name)}
+              onTagClick={(tag) => {
+                const newTags = !deadline.tags.includes(tag.name)
+                  ? [...deadline.tags, tag.name]
+                  : deadline.tags.filter((t) => t !== tag.name);
+                setDeadline({ ...deadline, tags: newTags });
+              }}
+            />
           ))}
         </div>
       </div>
