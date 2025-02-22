@@ -13,6 +13,7 @@ import { WarningMessage } from "../common/components/WarningMessage";
 import { classes } from "../common/functions";
 import { TagField } from "../common/components/TagField";
 import { Calendar } from "../common/components/Calendar";
+import { DeadlinePlanner } from "../common/components/DeadlinePlanner";
 
 const deadlineManager = new DeadlineManager();
 const tagsManager = new TagsManager();
@@ -243,7 +244,9 @@ export default function MainPage() {
             )}
           </div>
         </Section>
-        <Section title="Work Plan" />
+        <Section title="Deadline Schedule">
+          <DeadlinePlanner deadlines={upcomingDeadlines} />
+          </Section>
       </div>
 
       <Modal

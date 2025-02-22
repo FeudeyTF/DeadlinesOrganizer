@@ -1,0 +1,192 @@
+@use "../colors.scss";
+
+.planning-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 1rem;
+    border-radius: colors.$border-radius;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.planning-warnings {
+    background: linear-gradient(to right, #fff3cd, #fff8e6);
+    border: 1px solid #ffeeba;
+    border-left: 4px solid #f1c40f;
+    border-radius: colors.$border-radius;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    .warning-header {
+        color: #856404;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+
+        i {
+            color: #f1c40f;
+            font-size: 1.1rem;
+        }
+    }
+
+    .warning-item {
+        background: rgba(255, 255, 255, 0.7);
+        padding: 0.8rem;
+        border-radius: colors.$border-radius;
+        margin-bottom: 0.5rem;
+        transition: transform 0.2s ease;
+
+        &:hover {
+            transform: translateX(4px);
+        }
+
+        .warning-title {
+            font-weight: 500;
+
+            &.bad {
+                color: colors.$bad
+            }
+
+            &.average {
+                color: colors.$average
+            }
+
+            &.good {
+                color: colors.$average
+            }
+        }
+    }
+}
+
+.planning-day {
+    background: white;
+    border-radius: colors.$border-radius;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    &-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid colors.$text;
+    }
+}
+
+.day-date {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+.day-hours {
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
+    background: var(--background-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.planning-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.planning-task {
+    padding: 1rem;
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    border-radius: colors.$border-radius;
+    border-left: 4px solid colors.$primary;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: translateX(4px);
+    }
+
+    &.bad {
+        border-left-color: var(--danger-color);
+        background: linear-gradient(to right, #fff5f5, #ffffff);
+    }
+
+    &.average {
+        border-left-color: var(--warning-color);
+        background: linear-gradient(to right, #fff9f0, #ffffff);
+    }
+
+    &.good {
+        border-left-color: var(--accent-color);
+        background: linear-gradient(to right, #f0fff4, #ffffff);
+    }
+}
+
+.task-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-name {
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.task-hours {
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
+    background: var(--background-color);
+    padding: 0.3rem 0.6rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.planning-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background: colors.$white;
+    border-radius: colors.$border-radius;
+    border-left: 4px solid colors.$blue;
+
+    svg {
+        color: colors.$blue;
+        font-size: 1.2rem;
+        margin-top: 0.2rem;
+    }
+
+    .info-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .info-title {
+        color: colors.$text;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .info-text {
+        color: colors.bg(colors.$text);
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+}
