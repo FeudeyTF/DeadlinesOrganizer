@@ -12,6 +12,7 @@
 @include meta.load-css("./components/WarningMessage.scss");
 @include meta.load-css("./components/Calendar.scss");
 @include meta.load-css("./components/DeadlinePlanner.scss");
+@include meta.load-css("./components/Roadmap.scss");
 
 /* Modals */
 @include meta.load-css("./modals/AddDeadlineModal.scss");

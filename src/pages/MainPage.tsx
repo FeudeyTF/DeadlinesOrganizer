@@ -14,6 +14,7 @@ import { classes } from "../common/functions";
 import { TagField } from "../common/components/TagField";
 import { Calendar } from "../common/components/Calendar";
 import { DeadlinePlanner } from "../common/components/DeadlinePlanner";
+import { Roadmap } from "../common/components/Roadmap";
 
 const deadlineManager = new DeadlineManager();
 const tagsManager = new TagsManager();
@@ -40,6 +41,7 @@ export default function MainPage() {
   });
 
   const [areFiltersVisible, setAreFiltersVisible] = useState(false);
+  const [scheduleViewMode, setScheduleViewMode] = useState<'planner' | 'roadmap'>('planner');
 
   const filteredDeadlines = deadlines.filter((deadline) => {
     const matchesSearch =
@@ -244,9 +246,24 @@ export default function MainPage() {
             )}
           </div>
         </Section>
-        <Section title="Deadline Schedule">
-          <DeadlinePlanner deadlines={upcomingDeadlines} />
-          </Section>
+        <Section 
+          title="Deadline Schedule" 
+          headerButtons={
+            <Button
+              icon={scheduleViewMode === 'planner' ? 'timeline' : 'calendar-days'}
+              color="primary"
+              onClick={() => setScheduleViewMode(
+                scheduleViewMode === 'planner' ? 'roadmap' : 'planner'
+              )}
+            />
+          }
+        >
+          {scheduleViewMode === 'planner' ? (
+            <DeadlinePlanner deadlines={upcomingDeadlines} />
+          ) : (
+            <Roadmap deadlines={upcomingDeadlines} />
+          )}
+        </Section>
       </div>
 
       <Modal
