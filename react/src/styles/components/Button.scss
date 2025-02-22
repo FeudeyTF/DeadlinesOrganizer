@@ -76,6 +76,10 @@ $bg-map: colors.$bg-map;
     @include button-color($color-caution);
   }
 
+  &-color-transparent {
+    @include button-color(transparent);
+  }
+
   &-color-danger {
     @include button-color($color-danger);
   }

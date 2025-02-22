@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Button } from "../components/Button";
-import { Deadline, stringToPriority } from "../types";
+import { Deadline, stringToPriority, Tag } from "../types";
 
 type EditDeadlineModalProps = {
   deadline: Deadline;
   onSubmit: (data: Deadline) => void;
-  availableTags: Array<{ id: string; name: string }>;
+  availableTags: Tag[];
 };
 
 export function EditDeadlineModal(props: EditDeadlineModalProps) {
@@ -94,14 +94,12 @@ export function EditDeadlineModal(props: EditDeadlineModalProps) {
             <label key={tag.id} className="tag-checkbox">
               <input
                 type="checkbox"
-                checked={resultDeadline?.tags.includes(tag.id)}
+                checked={resultDeadline?.tags.includes(tag.name)}
                 onChange={(e) => {
                   const newTags = e.target.checked
-                    ? [...resultDeadline.tags, tag.id]
-                    : resultDeadline.tags.filter((t) => t !== tag.id);
-                  setResultDeadline(
-                    (prev) => prev && { ...prev, tags: newTags }
-                  );
+                    ? [...resultDeadline.tags, tag.name]
+                    : resultDeadline.tags.filter((t) => t !== tag.name);
+                  setResultDeadline({...resultDeadline, tags: newTags });
                 }}
               />
               <span>{tag.name}</span>

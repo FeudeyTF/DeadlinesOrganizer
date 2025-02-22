@@ -6,9 +6,11 @@
 @include meta.load-css("./components/DeadlineCard.scss");
 @include meta.load-css("./components/ProgressBar.scss");
 @include meta.load-css("./components/Modal.scss");
+@include meta.load-css("./components/TagField.scss");
 
 /* Modals */
 @include meta.load-css("./modals/AddDeadlineModal.scss");
+@include meta.load-css("./modals/ManageTagsModal.scss");
 
 /* Pages */
 @include meta.load-css("./pages/MainPage.scss");

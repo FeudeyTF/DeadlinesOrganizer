@@ -1,0 +1,64 @@
+@use "../colors.scss";
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 1rem;
+    background: #f5f6fa;
+    border-radius: colors.$border-radius;
+    min-height: 60px;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        margin-bottom: 0;
+    }
+
+    .tag-form-container {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        background: colors.$secondary;
+        padding: 0.8rem;
+        border-radius: colors.$border-radius;
+        margin-bottom: 1rem;
+
+        input[type="text"] {
+            flex: 1;
+            border: none;
+            background: white;
+            padding: 0.8rem;
+            border-radius: colors.$border-radius;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            color: colors.$black;
+        }
+
+        input[type="color"] {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+            outline: 1px solid #ddd;
+            flex-shrink: 0;
+
+            &::-webkit-color-swatch-wrapper {
+                padding: 0;
+            }
+
+            &::-webkit-color-swatch {
+                border: none;
+                border-radius: 6px;
+            }
+        }
+    }
+}

@@ -49,3 +49,9 @@ export function priorityToColor(priority: Priority): string {
       return '#4da6ff';
   }
 }
+
+export type Tag = {
+  id: number;
+  name: string;
+  color: string;
+}
