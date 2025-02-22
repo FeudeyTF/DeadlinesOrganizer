@@ -4,15 +4,23 @@ import { Section } from "../common/components/Section";
 import { AddDeadlineModal } from "../common/modals/AddDeadlineModal";
 import { EditDeadlineModal } from "../common/modals/EditDeadlineModal";
 import { DeadlineManager } from "../common/managers/DeadlineManager";
-import { Deadline, priorityToColor, Tag } from "../common/types";
+import { Deadline, priorityToColor, Tag, Priority } from "../common/types";
 import { useState } from "react";
 import { Modal } from "../common/components/Modal";
 import { TagsManager } from "../common/managers/TagsManager";
 import { ManageTagsModal } from "../common/modals/ManageTagsModal";
 import { WarningMessage } from "../common/components/WarningMessage";
+import { classes } from "../common/functions";
+import { TagField } from "../common/components/TagField";
 
 const deadlineManager = new DeadlineManager();
 const tagsManager = new TagsManager();
+
+type Filters = {
+  search: string;
+  priority: Priority | "all";
+  tags: string[];
+};
 
 export default function MainPage() {
   const [deadlines, setDeadlines] = useState(deadlineManager.deadlines);
@@ -22,6 +30,31 @@ export default function MainPage() {
   const [isManageTagsModalOpen, setIsManageTagsModalOpen] = useState(false);
 
   const [editingDeadline, setEditingDeadline] = useState<Deadline | null>(null);
+
+  const [filters, setFilters] = useState<Filters>({
+    search: "",
+    priority: "all",
+    tags: [],
+  });
+
+  const [areFiltersVisible, setAreFiltersVisible] = useState(false);
+
+  const filteredDeadlines = deadlines.filter((deadline) => {
+    const matchesSearch =
+      deadline.courseName
+        .toLowerCase()
+        .includes(filters.search.toLowerCase()) ||
+      deadline.taskName.toLowerCase().includes(filters.search.toLowerCase());
+
+    const matchesPriority =
+      filters.priority === "all" || deadline.priority === filters.priority;
+
+    const matchesTags =
+      filters.tags.length === 0 ||
+      filters.tags.every((tag) => deadline.tags.includes(tag));
+
+    return matchesSearch && matchesPriority && matchesTags;
+  });
 
   function openEditDeadlineModal(deadline: Deadline) {
     setEditingDeadline(deadline);
@@ -80,10 +113,74 @@ export default function MainPage() {
       </header>
       <div className="dashboard">
         <Section title="Calendar" />
-        <Section title="Upcoming Deadlines">
+        <Section
+          title="Upcoming Deadlines"
+          headerButtons={
+            <Button
+              icon="filter"
+              color="transparent"
+              className="filter-button"
+              onClick={() => setAreFiltersVisible(!areFiltersVisible)}
+            />
+          }
+        >
+          <div
+            className={classes([
+              "filters-container",
+              areFiltersVisible ? "visible" : "hidden",
+            ])}
+          >
+            <div className="filters-row">
+              <div className="form-group">
+                <label>Search</label>
+                <input
+                  type="text"
+                  placeholder="Search by course or task name..."
+                  value={filters.search}
+                  onChange={(e) =>
+                    setFilters({ ...filters, search: e.target.value })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Priority</label>
+                <select
+                  value={filters.priority}
+                  onChange={(e) =>
+                    setFilters({
+                      ...filters,
+                      priority: e.target.value as Priority | "all",
+                    })
+                  }
+                >
+                  <option value="all">All Priorities</option>
+                  <option value={Priority.High}>High</option>
+                  <option value={Priority.Medium}>Medium</option>
+                  <option value={Priority.Low}>Low</option>
+                </select>
+              </div>
+            </div>
+            <div className="tags-section">
+              <label>Tags</label>
+              <div className="tags-select">
+                {tags.map((tag) => (
+                  <TagField
+                    tag={tag}
+                    onTagClick={(tag) => {
+                      const newTags = filters.tags.includes(tag.name)
+                        ? filters.tags.filter((t) => t !== tag.name)
+                        : [...filters.tags, tag.name];
+                      setFilters({ ...filters, tags: newTags });
+                    }}
+                    disabled={!filters.tags.includes(tag.name)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
           <div className="deadlines-list">
-            {deadlines.length > 0 ? (
-              deadlines.map((deadline) => (
+            {filteredDeadlines.length > 0 ? (
+              filteredDeadlines.map((deadline) => (
                 <DeadlineCard
                   key={deadline.id}
                   deadline={deadline}
@@ -108,8 +205,8 @@ export default function MainPage() {
               ))
             ) : (
               <WarningMessage
-                icon="filter-circle-xmark"
-                name="No matching deadlines found"
+                icon="filter"
+                name="No matching deadlines"
                 description="Try adjusting your filters or adding new deadlines."
               />
             )}

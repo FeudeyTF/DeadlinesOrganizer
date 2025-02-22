@@ -1,26 +1,30 @@
+import { classes } from "../functions";
 import { Tag } from "../types";
 import { Button } from "./Button";
 
 type TagProps = {
-  onTagDelete: (tag: Tag) => void;
+  onTagClick?: (tag: Tag) => void;
+  onTagDelete?: (tag: Tag) => void;
+  disabled?: boolean;
   tag: Tag;
 };
 
 export function TagField(props: TagProps) {
-  const { tag, onTagDelete } = props;
+  const { tag, disabled = false, onTagDelete, onTagClick } = props;
   return (
     <div
       key={tag.id}
-      className="tag-item"
-      style={{ backgroundColor: tag.color }}
+      onClick={() => onTagClick && onTagClick(tag)}
+      className={classes(["tag-item", disabled && "disabled"])}
+      style={{ backgroundColor: disabled ? tag.color : tag.color }}
     >
       {tag.name}
-      <Button
+      {onTagDelete && <Button
         icon="times"
         color="transparent"
         onClick={() => onTagDelete(tag)}
         className="delete-tag"
-      />
+      />}
     </div>
   );
 }
