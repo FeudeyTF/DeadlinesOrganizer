@@ -103,3 +103,41 @@
         }
     }
 }
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  header {
+    flex-direction: column;
+    gap: 1rem;
+    
+    .header-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      width: 100%;
+      
+      button {
+        flex: 1;
+        min-width: 140px;
+      }
+    }
+  }
+
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-container {
+    .filters-row {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+
+  .deadlines-list {
+    max-height: 400px;
+  }
+}
