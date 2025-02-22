@@ -1,5 +1,7 @@
 @use "sass:meta";
 
+@include meta.load-css("./base.scss");
+
 /* Components */
 @include meta.load-css("./components/Button.scss");
 @include meta.load-css("./components/Section.scss");
