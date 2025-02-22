@@ -30,8 +30,8 @@ export function DeadlineCard(props: DeadlineCardProps) {
       </div>
       {deadline.tags && deadline.tags.length > 0 && (
         <div className="tags">
-          {deadline.tags.map((tag, index) => (
-            <span key={index} className="tag">
+          {deadline.tags.map((tag) => (
+            <span key={tag} className="tag">
               {tag}
             </span>
           ))}

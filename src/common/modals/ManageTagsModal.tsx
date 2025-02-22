@@ -34,7 +34,13 @@ export function ManageTagsModal(props: ManageTagsModalProps) {
     <>
       <div className="tags-list">
         {tags.length > 0 ? (
-          tags.map((tag) => <TagField tag={tag} onTagDelete={onTagDelete} />)
+          tags.map((tag) => (
+            <TagField
+              key={tag.id}
+              tag={tag}
+              onTagDelete={onTagDelete}
+            />
+          ))
         ) : (
           <WarningMessage
             icon="tags"

@@ -180,6 +180,7 @@ export default function MainPage() {
               <div className="tags-select">
                 {tags.map((tag) => (
                   <TagField
+                    key={tag.id}
                     tag={tag}
                     onTagClick={(tag) => {
                       const newTags = filters.tags.includes(tag.name)
@@ -202,6 +203,7 @@ export default function MainPage() {
                   color={priorityToColor(deadline.priority)}
                   buttons={[
                     <Button
+                      key="delete"
                       color="bad"
                       icon="trash"
                       circle
@@ -211,6 +213,7 @@ export default function MainPage() {
                       }}
                     />,
                     <Button
+                      key="edit"
                       icon="pen"
                       circle
                       onClick={() => openEditDeadlineModal(deadline)}
