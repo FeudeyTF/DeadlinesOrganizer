@@ -62,48 +62,89 @@ function MilestoneNode(props: MilestoneNodeProps) {
     weekday: "long",
     month: "short",
     day: "numeric",
+    year: "numeric",
   };
 
+  const isToday = new Date().toDateString() === milestone.date.toDateString();
+  const isPast = milestone.date < new Date();
+
   return (
-    <div className="milestone-node">
+    <div
+      className={classes([
+        "milestone-node",
+        isToday && "today",
+        isPast && "past",
+      ])}
+    >
       <div className="milestone-header">
-        <div className="milestone-dot" />
-        <FontAwesomeIcon icon="calendar-alt" />
+        <div className={classes(["milestone-dot", isToday && "pulse"])} />
+        <FontAwesomeIcon
+          icon="calendar-alt"
+          className={isToday ? "highlight" : ""}
+        />
         <h3>{milestone.date.toLocaleDateString(undefined, dateOptions)}</h3>
+        {isToday && <span className="today-badge">TODAY</span>}
       </div>
       <div className="milestone-content">
-        {milestone.deadlines.map((deadline, index) => (
-          <div
-            key={index}
-            className={classes([
-              "milestone-deadline",
-              `priority-${priorityToColor(deadline.priority)}`,
-            ])}
-          >
-            <div className="deadline-header">
-              <span className="deadline-date">
-                <FontAwesomeIcon icon="calendar" />
-                {new Date(deadline.endDate).toLocaleDateString()}
-              </span>
-              <span className="deadline-hours">
-                <FontAwesomeIcon icon="clock" />
-                {deadline.timeToDo}h {Math.floor(deadline.timeToDo / 60)}m
-              </span>
-            </div>
-            <h4>{deadline.courseName}</h4>
-            <p>{deadline.taskName}</p>
-            {deadline.tags.length > 0 && (
-              <div className="deadline-tags">
-                {deadline.tags.map((tag, idx) => (
-                  <span key={idx} className="tag">
-                    {tag}
-                  </span>
-                ))}
+        {milestone.deadlines.map((deadline, index) => {
+          const progress = calculateProgress(
+            deadline.createdDate,
+            deadline.endDate
+          );
+          return (
+            <div
+              key={index}
+              className={classes([
+                "milestone-deadline",
+                `priority-${priorityToColor(deadline.priority)}`,
+              ])}
+            >
+              <div className="deadline-header">
+                <span className="deadline-date">
+                  <FontAwesomeIcon icon="calendar" />
+                  {new Date(deadline.endDate).toLocaleDateString()}
+                </span>
+                <span className="deadline-hours">
+                  <FontAwesomeIcon icon="clock" />
+                  {deadline.timeToDo}h {Math.floor(deadline.timeToDo / 60)}m
+                </span>
               </div>
-            )}
-          </div>
-        ))}
+              <h4>{deadline.courseName}</h4>
+              <p>{deadline.taskName}</p>
+              {deadline.tags.length > 0 && (
+                <div className="deadline-tags">
+                  {deadline.tags.map((tag, idx) => (
+                    <span key={idx} className="tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="progress-bar">
+                <div className="progress" style={{ width: `${progress}%` }} />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
+}
+
+function calculateProgress(createdDate: string, endDate: string) {
+  const end = new Date(endDate);
+  const created = new Date(createdDate);
+  console.log(created);
+  created.setDate(created.getDate() - 14);
+  const total = end.getTime() - created.getTime();
+  const remaining = end.getTime() - new Date().getTime();
+  if (remaining <= 0) {
+    return 100;
+  }
+  if (total <= 0) {
+    return 0;
+  }
+
+  const progress = (remaining / total) * 100;
+  return Math.min(Math.max(progress, 0), 100);
 }

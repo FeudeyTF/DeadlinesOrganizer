@@ -5,6 +5,7 @@
     padding: 2rem;
     max-height: 500px;
     overflow-y: auto;
+
     &::before {
         content: '';
         position: absolute;
@@ -14,6 +15,48 @@
         width: 3px;
         background: linear-gradient(to bottom, colors.$primary, colors.$good);
         border-radius: 3px;
+        animation: timeline-glow 2s ease-in-out infinite alternate;
+    }
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: colors.$primary;
+        border-radius: 4px;
+
+        &:hover {
+            background: darken(colors.$primary, 10%);
+        }
+    }
+}
+
+@keyframes timeline-glow {
+    from {
+        box-shadow: 0 0 2px colors.$primary;
+    }
+
+    to {
+        box-shadow: 0 0 8px colors.$primary;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
     }
 }
 
@@ -21,6 +64,15 @@
     position: relative;
     margin-bottom: 2rem;
     padding-left: 100px;
+
+    &.today .milestone-dot {
+        animation: pulse 2s infinite;
+        background: colors.$good;
+    }
+
+    &.past .milestone-dot {
+        background: colors.$grey;
+    }
 
     .milestone-header {
         display: flex;
@@ -45,6 +97,19 @@
             box-shadow: 0 0 0 3px colors.$primary;
             margin-right: 2rem;
         }
+
+        .highlight {
+            color: colors.$good;
+        }
+
+        .today-badge {
+            background: colors.$good;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-left: 1rem;
+        }
     }
 
     .milestone-content {
@@ -65,7 +130,8 @@
     transition: transform 0.2s ease;
 
     &:hover {
-        transform: translateX(8px);
+        transform: translateX(8px) translateY(-2px);
+        box-shadow: colors.$shadow;
     }
 
     &.priority-bad {
@@ -133,6 +199,20 @@
             padding: 0.25rem 0.5rem;
             border-radius: 1rem;
             font-size: 0.8rem;
+        }
+    }
+
+    .progress-bar {
+        height: 4px;
+        background: colors.$grey;
+        border-radius: 2px;
+        margin: 0.5rem 0;
+        overflow: hidden;
+
+        .progress {
+            height: 100%;
+            background: colors.$good;
+            transition: width 0.3s ease;
         }
     }
 }
