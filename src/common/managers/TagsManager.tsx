@@ -1,28 +1,30 @@
 import { Tag } from "../types";
+import { ApiService } from "../../services/api";
 
 export class TagsManager {
   tags: Tag[];
 
   constructor() {
-    this.tags = JSON.parse(localStorage.getItem("tags") || "[]");
+    this.tags = [];
+    this.loadTags();
   }
 
-  addTag(tag: Tag) {
-    this.tags.push(tag);
-    this.saveTags();
-    return tag;
+  private async loadTags() {
+    this.tags = await ApiService.fetchTags();
   }
 
-  deleteTag(id: number) {
+  async addTag(tag: Tag) {
+    const newTag = await ApiService.createTag(tag);
+    this.tags.push(newTag);
+    return newTag;
+  }
+
+  async deleteTag(id: number) {
+    await ApiService.deleteTag(id);
     this.tags = this.tags.filter((tag) => tag.id !== id);
-    this.saveTags();
   }
 
   getTagById(id: number) {
     return this.tags.find((tag) => tag.id === id);
-  }
-
-  saveTags() {
-    localStorage.setItem("tags", JSON.stringify(this.tags));
   }
 }

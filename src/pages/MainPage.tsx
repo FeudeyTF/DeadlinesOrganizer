@@ -5,7 +5,7 @@ import { AddDeadlineModal } from "../common/modals/AddDeadlineModal";
 import { EditDeadlineModal } from "../common/modals/EditDeadlineModal";
 import { DeadlineManager } from "../common/managers/DeadlineManager";
 import { Deadline, priorityToColor, Tag, Priority } from "../common/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal } from "../common/components/Modal";
 import { TagsManager } from "../common/managers/TagsManager";
 import { ManageTagsModal } from "../common/modals/ManageTagsModal";
@@ -16,7 +16,6 @@ import { Calendar } from "../common/components/Calendar";
 import { DeadlinePlanner } from "../common/components/DeadlinePlanner";
 import { Roadmap } from "../common/components/Roadmap";
 
-const deadlineManager = new DeadlineManager();
 const tagsManager = new TagsManager();
 
 type Filters = {
@@ -26,7 +25,8 @@ type Filters = {
 };
 
 export default function MainPage() {
-  const [deadlines, setDeadlines] = useState(deadlineManager.deadlines);
+  const [deadlineManager, setDeadlineManager] = useState<DeadlineManager | null>(null);
+  const [deadlines, setDeadlines] = useState<Deadline[]>([]);
   const [tags, setTags] = useState(tagsManager.tags);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -44,6 +44,19 @@ export default function MainPage() {
   const [scheduleViewMode, setScheduleViewMode] = useState<
     "planner" | "roadmap"
   >("planner");
+
+  useEffect(() => {
+    const initializeManager = async () => {
+      const manager = await DeadlineManager.getInstance();
+      setDeadlineManager(manager);
+      setDeadlines(manager.deadlines);
+    };
+    initializeManager();
+  }, []);
+
+  if (!deadlineManager) {
+    return <div>Loading...</div>;
+  }
 
   const filteredDeadlines = deadlines.filter((deadline) => {
     const matchesSearch =
@@ -73,7 +86,7 @@ export default function MainPage() {
   }
 
   function closeEditDeadlineModal(deadline: Deadline | null) {
-    if (editingDeadline && deadline) {
+    if ( deadlineManager && editingDeadline && deadline) {
       deadlineManager.updateDeadline(editingDeadline.id, deadline);
       setDeadlines([...deadlineManager.deadlines]);
     }
@@ -85,7 +98,7 @@ export default function MainPage() {
   }
 
   function closeAddDeadlineModal(deadline: Deadline | null) {
-    if (deadline) {
+    if (deadlineManager && deadline) {
       deadlineManager.addDeadline(deadline);
       setDeadlines([...deadlineManager.deadlines]);
     }

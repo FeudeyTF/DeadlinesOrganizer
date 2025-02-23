@@ -1,32 +1,43 @@
 import { Deadline } from "../types";
+import { ApiService } from "../../services/api";
 
 export class DeadlineManager {
   deadlines: Deadline[];
+  private static instance: DeadlineManager | null = null;
 
-  constructor() {
-    this.deadlines = JSON.parse(localStorage.getItem("deadlines") || "[]");
+  private constructor() {
+    this.deadlines = [];
   }
 
-  addDeadline(deadline: Deadline) {
-    this.deadlines.push({
-      ...deadline,
-      id: Date.now(),
-      createdDate: new Date(Date.now()).toISOString(),
-    });
-    this.saveDeadlines();
+  static async getInstance(): Promise<DeadlineManager> {
+    if (!this.instance) {
+      this.instance = new DeadlineManager();
+      await this.instance.loadDeadlines();
+    }
+    return this.instance;
   }
 
-  updateDeadline(id: number, updatedDeadline: Deadline) {
+  private async loadDeadlines() {
+    this.deadlines = await ApiService.fetchDeadlines();
+  }
+
+  async addDeadline(deadline: Deadline) {
+    const newDeadline = await ApiService.createDeadline(deadline);
+    this.deadlines.push(newDeadline);
+    console.log(this.deadlines);
+  }
+
+  async updateDeadline(id: number, updatedDeadline: Deadline) {
+    const updated = await ApiService.updateDeadline(id, updatedDeadline);
     const index = this.deadlines.findIndex((d) => d.id === id);
     if (index !== -1) {
-      this.deadlines[index] = { ...this.deadlines[index], ...updatedDeadline };
-      this.saveDeadlines();
+      this.deadlines[index] = updated;
     }
   }
 
-  deleteDeadline(id: number) {
+  async deleteDeadline(id: number) {
+    await ApiService.deleteDeadline(id);
     this.deadlines = this.deadlines.filter((d) => d.id !== id);
-    this.saveDeadlines();
   }
 
   getDeadlinesForDate(date: Date) {
@@ -38,10 +49,6 @@ export class DeadlineManager {
         deadlineDate.getFullYear() === date.getFullYear()
       );
     });
-  }
-
-  saveDeadlines() {
-    localStorage.setItem("deadlines", JSON.stringify(this.deadlines));
   }
 
   sortDeadlines() {

@@ -21,7 +21,7 @@ const initialDeadline: Deadline = {
 
 export function AddDeadlineModal(props: AddDeadlineModalProps) {
   const { onSubmit, tags } = props;
-  const [deadline, setDeadline] = useState<Deadline>(initialDeadline);
+  const [deadline, setDeadline] = useState<Deadline>({...initialDeadline, createdDate: new Date(Date.now()).toISOString().slice(0, 16)});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
