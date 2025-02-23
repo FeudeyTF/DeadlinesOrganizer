@@ -7,14 +7,19 @@ type DeadlineCardProps = {
   deadline: Deadline;
   buttons?: ReactNode;
   color?: string;
+  showProgress: boolean;
 } & DefaultProps;
 
 export function DeadlineCard(props: DeadlineCardProps) {
-  const { deadline, buttons, color, className, ...rest } = props;
+  const { deadline, buttons, color, className, showProgress, ...rest } = props;
 
   return (
     <div
-      className={classes(["deadline-card", color && "deadline-card-color-" + color, className])}
+      className={classes([
+        "deadline-card",
+        color && "deadline-card-color-" + color,
+        className,
+      ])}
       {...rest}
     >
       <div className="header">
@@ -45,26 +50,36 @@ export function DeadlineCard(props: DeadlineCardProps) {
           {getRemainingTime(new Date(deadline.endDate))}
         </div>
       </div>
-      <ProgressBar
-        progress={generateDeadlineProgress(
-          deadline.createdDate,
-          deadline.endDate
-        )}
-      />
+      {showProgress && (
+        <ProgressBar
+          progress={generateDeadlineProgress(
+            deadline.createdDate,
+            deadline.endDate
+          )}
+        />
+      )}
     </div>
   );
 }
 
-function generateDeadlineProgress(createdDate: string, endDate: string) {
+function generateDeadlineProgress(
+  createdDate: string,
+  endDate: string
+): number {
   const end = new Date(endDate);
   const created = new Date(createdDate);
+  console.log(created);
+  created.setDate(created.getDate() - 14);
   const total = end.getTime() - created.getTime();
   const remaining = end.getTime() - new Date().getTime();
+  if (remaining <= 0) {
+    return 100;
+  }
+  if (total <= 0) {
+    return 0;
+  }
 
-  if (remaining <= 0) return 100;
-  if (total <= 0) return 0;
-
-  const progress = ((total - remaining) / total) * 100;
+  const progress = (remaining / total) * 100;
   return Math.min(Math.max(progress, 0), 100);
 }
 
@@ -84,8 +99,8 @@ const getRemainingTime = (endDate: Date) => {
 };
 
 const formatTimeToDo = (minutes: number) => {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
+  const hours = minutes;
+  const mins = Math.floor(minutes / 60);
   if (hours > 0) {
     return `${hours} h ${mins} min`;
   }

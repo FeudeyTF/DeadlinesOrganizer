@@ -41,7 +41,9 @@ export default function MainPage() {
   });
 
   const [areFiltersVisible, setAreFiltersVisible] = useState(false);
-  const [scheduleViewMode, setScheduleViewMode] = useState<'planner' | 'roadmap'>('planner');
+  const [scheduleViewMode, setScheduleViewMode] = useState<
+    "planner" | "roadmap"
+  >("planner");
 
   const filteredDeadlines = deadlines.filter((deadline) => {
     const matchesSearch =
@@ -64,9 +66,7 @@ export default function MainPage() {
   const upcomingDeadlines = filteredDeadlines.filter(
     (d) => new Date(d.endDate) > now
   );
-  const pastDeadlines = deadlines.filter(
-    (d) => new Date(d.endDate) <= now
-  );
+  const pastDeadlines = deadlines.filter((d) => new Date(d.endDate) <= now);
 
   function openEditDeadlineModal(deadline: Deadline) {
     setEditingDeadline(deadline);
@@ -125,9 +125,8 @@ export default function MainPage() {
       </header>
       <div className="dashboard">
         <Section title="Calendar">
-          
-        <Calendar deadlines={deadlineManager.deadlines} />
-          </Section>
+          <Calendar deadlines={deadlineManager.deadlines} />
+        </Section>
         <Section
           title="Upcoming Deadlines"
           headerButtons={
@@ -198,6 +197,7 @@ export default function MainPage() {
             {upcomingDeadlines.length > 0 ? (
               upcomingDeadlines.map((deadline) => (
                 <DeadlineCard
+                  showProgress
                   key={deadline.id}
                   deadline={deadline}
                   color={priorityToColor(deadline.priority)}
@@ -235,9 +235,28 @@ export default function MainPage() {
             {pastDeadlines.length > 0 ? (
               pastDeadlines.map((deadline) => (
                 <DeadlineCard
+                  showProgress={false}
                   key={deadline.id}
                   deadline={deadline}
                   className="past-deadline"
+                  buttons={[
+                    <Button
+                      key="delete"
+                      color="bad"
+                      icon="trash"
+                      circle
+                      onClick={() => {
+                        deadlineManager.deleteDeadline(deadline.id);
+                        setDeadlines([...deadlineManager.deadlines]);
+                      }}
+                    />,
+                    <Button
+                      key="edit"
+                      icon="pen"
+                      circle
+                      onClick={() => openEditDeadlineModal(deadline)}
+                    />,
+                  ]}
                 />
               ))
             ) : (
@@ -249,19 +268,23 @@ export default function MainPage() {
             )}
           </div>
         </Section>
-        <Section 
-          title="Deadline Schedule" 
+        <Section
+          title="Deadline Schedule"
           headerButtons={
             <Button
-              icon={scheduleViewMode === 'planner' ? 'timeline' : 'calendar-days'}
+              icon={
+                scheduleViewMode === "planner" ? "timeline" : "calendar-days"
+              }
               color="primary"
-              onClick={() => setScheduleViewMode(
-                scheduleViewMode === 'planner' ? 'roadmap' : 'planner'
-              )}
+              onClick={() =>
+                setScheduleViewMode(
+                  scheduleViewMode === "planner" ? "roadmap" : "planner"
+                )
+              }
             />
           }
         >
-          {scheduleViewMode === 'planner' ? (
+          {scheduleViewMode === "planner" ? (
             <DeadlinePlanner deadlines={upcomingDeadlines} />
           ) : (
             <Roadmap deadlines={upcomingDeadlines} />
@@ -274,7 +297,10 @@ export default function MainPage() {
         onClose={() => closeAddDeadlineModal(null)}
         title="Add New Deadline"
       >
-        <AddDeadlineModal tags={tagsManager.tags} onSubmit={closeAddDeadlineModal} />
+        <AddDeadlineModal
+          tags={tagsManager.tags}
+          onSubmit={closeAddDeadlineModal}
+        />
       </Modal>
 
       <Modal

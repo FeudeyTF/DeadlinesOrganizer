@@ -11,7 +11,7 @@ export class DeadlineManager {
     this.deadlines.push({
       ...deadline,
       id: Date.now(),
-      createdDate: "",
+      createdDate: new Date(Date.now()).toISOString(),
     });
     this.saveDeadlines();
   }
