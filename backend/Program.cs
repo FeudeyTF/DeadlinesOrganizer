@@ -1,10 +1,11 @@
-﻿using HttpServer;
+﻿using DeadlineOrganizerBackend.API;
+using DeadlineOrganizerBackend.API.Converters;
+using DeadlineOrganizerBackend.Rest;
+using HttpServer;
 using HttpServer.Headers;
-using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using HttpListener = HttpServer.HttpListener;
 
 namespace DeadlineOrganizerBackend
@@ -13,31 +14,45 @@ namespace DeadlineOrganizerBackend
     {
         public static readonly IPAddress IP;
 
-        public const int Port = 3001;
+        public static readonly int Port;
+
+        private static readonly ConfigFile _config;
 
         private static readonly HttpListener _server;
 
         private static readonly List<Deadline> _deadlines;
 
+        private static int _deadlinesCount = 1;
+
         private static readonly JsonSerializerOptions _options = new()
         {
-            Converters = { new DateTimeConverter(), new PriorityConverter() },
+            Converters = {
+                new DateTimeConverter(),
+                new PriorityConverter()
+            },
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
         static Program()
         {
-            IP = IPAddress.Loopback;
+            _config = ConfigFile.Load("config");
+            if (IPAddress.TryParse(_config.ServerIP, out var parsedIp))
+                IP = parsedIp;
+            else
+            {
+                IP = IPAddress.Loopback;
+                Console.WriteLine("Can't parse config IP address. Using default: " + IP);
+            }
+            Port = _config.Port;
             _server = HttpListener.Create(IP, Port);
             _deadlines = [];
         }
 
-        static int id = 1;
-
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             _deadlines.Add(new(1, "test", "test123", 1, Priority.High, DateTime.Now.AddDays(-10), DateTime.Now.AddDays(10), []));
             _server.Start(int.MaxValue);
+
             Console.WriteLine($"Http Server started at {IP}:{Port}");
             _server.RequestReceived += HandleRequestRecieved;
             while (true)
@@ -79,7 +94,7 @@ namespace DeadlineOrganizerBackend
                             var deadline = JsonSerializer.Deserialize<Deadline>(str, _options);
                             if (deadline != null)
                             {
-                                deadline.Id = ++id;
+                                deadline.Id = ++_deadlinesCount;
                                 _deadlines.Add(deadline);
                                 return new RestObject(HttpStatusCode.Created, deadline);
                             }
@@ -87,94 +102,10 @@ namespace DeadlineOrganizerBackend
                         }
                         return new RestObject(HttpStatusCode.OK, _deadlines);
                     case "tags":
-                        return new RestObject(HttpStatusCode.OK, new List<object>());
+                        return new RestObject(HttpStatusCode.OK, new List<Tag>());
                 }
             }
             return new(HttpStatusCode.NoContent, null);
-        }
-    }
-
-    public class DateTimeConverter : JsonConverter<DateTime>
-    {
-        private const string DateFormat = "yyyy-MM-dd'T'HH:mm";
-
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var dateTimeString = reader.GetString();
-            if (dateTimeString == null)
-                return DateTime.MinValue;
-            return DateTime.ParseExact(dateTimeString, DateFormat, CultureInfo.InvariantCulture);
-        }
-
-        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(value.ToString(DateFormat, CultureInfo.InvariantCulture));
-        }
-    }
-    public class PriorityConverter : JsonConverter<Priority>
-    {
-        public override Priority Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var value = reader.GetString();
-            if(Enum.TryParse<Priority>(value, true, out var result))
-                return result;
-            return Priority.Low;
-        }
-
-        public override void Write(Utf8JsonWriter writer, Priority value, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(value.ToString());
-        }
-    }
-
-    public class RestObject
-    {
-        public HttpStatusCode Status;
-
-        public object? Object;
-
-        public RestObject(HttpStatusCode status, object? obj)
-        {
-            Status = status;
-            Object = obj;
-        }
-    }
-
-    public enum Priority
-    {
-        High,
-        Medium,
-        Low
-    }
-
-    public class Deadline
-    {
-        public int Id { get; set; }
-
-        public string CourseName { get; set; }
-
-        public string TaskName { get; set; }
-
-        public int TimeToDo { get; set; }
-
-        public Priority Priority { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-
-        public DateTime EndDate { get; set; }
-
-        public List<object> Tags { get; set; }
-
-        public Deadline(int id, string courseName, string taskName, int timeToDo, Priority priority, DateTime createdDate, DateTime endDate, List<object> tags)
-        {
-            Id = id;
-            CourseName = courseName;
-            TaskName = taskName;
-            TimeToDo = timeToDo;
-            Priority = priority;
-            CreatedDate = createdDate;
-            EndDate = endDate;
-            Tags = tags;
         }
     }
 }
