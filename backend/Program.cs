@@ -1,6 +1,7 @@
 ﻿using DeadlineOrganizerBackend.API;
 using DeadlineOrganizerBackend.API.Converters;
 using DeadlineOrganizerBackend.Rest;
+using DeadlineOrganizerBackend.Rest.Attributes;
 using HttpServer;
 using HttpServer.Headers;
 using System.Net;
@@ -24,9 +25,12 @@ namespace DeadlineOrganizerBackend
 
         private static int _deadlinesCount = 1;
 
+        private static List<RestMethodDelegate> _methods;
+
         private static readonly JsonSerializerOptions _options = new()
         {
-            Converters = {
+            Converters = 
+            {
                 new DateTimeConverter(),
                 new PriorityConverter()
             },
@@ -46,6 +50,7 @@ namespace DeadlineOrganizerBackend
             Port = _config.Port;
             _server = HttpListener.Create(IP, Port);
             _deadlines = [];
+            _methods = [];
         }
 
         private static void Main(string[] args)
@@ -61,6 +66,8 @@ namespace DeadlineOrganizerBackend
                 if (!string.IsNullOrEmpty(command) && command.Equals("exit", StringComparison.OrdinalIgnoreCase))
                     return;
             }
+
+            
         }
 
         private static void HandleRequestRecieved(object? sender, RequestEventArgs args)
@@ -79,7 +86,31 @@ namespace DeadlineOrganizerBackend
             args.Response.Status = obj.Status;
         }
 
-        private static RestObject GetRestObject(RequestEventArgs args)
+        [RestMethod(HttpMethodType.POST)]
+        [RestRoute("deadlines")]
+        private static RestResponse CreateDeadline(RequestEventArgs args)
+        {
+            var body = new byte[args.Request.Body.Length];
+            args.Request.Body.ReadExactly(body);
+            var str = Encoding.UTF8.GetString(body);
+            var deadline = JsonSerializer.Deserialize<Deadline>(str, _options);
+            if (deadline != null)
+            {
+                deadline.Id = ++_deadlinesCount;
+                _deadlines.Add(deadline);
+                return new RestResponse(HttpStatusCode.Created, deadline);
+            }
+            return new RestResponse(HttpStatusCode.BadRequest, null);
+        }
+        
+        [RestMethod(HttpMethodType.GET)]
+        [RestRoute("deadlines")]
+        private static RestResponse GetDeadlines(RequestEventArgs args)
+        {
+            return new RestResponse(HttpStatusCode.OK, _deadlines);
+        }
+
+        private static RestResponse GetRestObject(RequestEventArgs args)
         {
             if (args.Request.Uri.Segments.Length > 0)
             {
@@ -96,13 +127,13 @@ namespace DeadlineOrganizerBackend
                             {
                                 deadline.Id = ++_deadlinesCount;
                                 _deadlines.Add(deadline);
-                                return new RestObject(HttpStatusCode.Created, deadline);
+                                return new RestResponse(HttpStatusCode.Created, deadline);
                             }
-                            return new RestObject(HttpStatusCode.BadRequest, null);
+                            return new RestResponse(HttpStatusCode.BadRequest, null);
                         }
-                        return new RestObject(HttpStatusCode.OK, _deadlines);
+                        return new RestResponse(HttpStatusCode.OK, _deadlines);
                     case "tags":
-                        return new RestObject(HttpStatusCode.OK, new List<Tag>());
+                        return new RestResponse(HttpStatusCode.OK, new List<Tag>());
                 }
             }
             return new(HttpStatusCode.NoContent, null);

@@ -2,13 +2,13 @@
 
 namespace DeadlineOrganizerBackend.Rest
 {
-    public class RestObject
+    public class RestResponse
     {
         public HttpStatusCode Status;
 
         public object? Object;
 
-        public RestObject(HttpStatusCode status, object? obj)
+        public RestResponse(HttpStatusCode status, object? obj)
         {
             Status = status;
             Object = obj;
