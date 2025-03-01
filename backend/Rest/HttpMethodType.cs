@@ -2,7 +2,9 @@
 {
     internal enum HttpMethodType
     {
-        GET,
-        POST
+        Get,
+        Post,
+        Delete,
+        Put
     }
 }

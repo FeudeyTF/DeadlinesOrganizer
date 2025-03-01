@@ -1,4 +1,7 @@
-﻿namespace DeadlineOrganizerBackend.API
+﻿using DeadlineOrganizerBackend.Rest;
+using System.Net;
+
+namespace DeadlineOrganizerBackend.API
 {
     internal class Deadline
     {
@@ -28,6 +31,22 @@
             CreatedDate = createdDate;
             EndDate = endDate;
             Tags = tags;
+        }
+
+        public RestResponse ToRestResponse()
+        {
+            RestResponse response = new(HttpStatusCode.OK)
+            {
+                ["id"] = Id,
+                ["courseName"] = CourseName,
+                ["taskName"] = TaskName,
+                ["timeToDo"] = TimeToDo,
+                ["priority"] = Priority,
+                ["createdDate"] = CreatedDate.ToAPI(),
+                ["endDate"] = EndDate.ToAPI(),
+                ["tags"] = Tags
+            };
+            return response;
         }
     }
 }

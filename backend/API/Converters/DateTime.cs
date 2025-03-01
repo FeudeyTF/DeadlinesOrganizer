@@ -1,24 +1,21 @@
 ﻿using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace DeadlineOrganizerBackend.API.Converters
 {
-    public class DateTimeConverter : JsonConverter<DateTime>
+    public class DateTimeConverter
     {
         private const string DateFormat = "yyyy-MM-dd'T'HH:mm";
 
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public static DateTime StringToDate(string? dateTime)
         {
-            var dateTimeString = reader.GetString();
-            if (dateTimeString == null)
+            if (dateTime == null)
                 return DateTime.MinValue;
-            return DateTime.ParseExact(dateTimeString, DateFormat, CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(dateTime, DateFormat, CultureInfo.InvariantCulture);
         }
 
-        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        public static string DateToString(DateTime dateTime)
         {
-            writer.WriteStringValue(value.ToString(DateFormat, CultureInfo.InvariantCulture));
+            return dateTime.ToString(DateFormat, CultureInfo.InvariantCulture);
         }
     }
 }
