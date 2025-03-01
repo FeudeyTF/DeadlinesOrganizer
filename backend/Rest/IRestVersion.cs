@@ -4,6 +4,6 @@
     {
         public int Version { get; }
 
-        public List<RestCommand> GetRestCommands();
+        public List<RestEndpoint> GetRestEndpoints();
     } 
 }

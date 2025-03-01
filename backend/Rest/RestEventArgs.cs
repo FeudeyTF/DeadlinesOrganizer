@@ -10,5 +10,10 @@ namespace DeadlineOrganizerBackend.Rest
         {
             RequestArgs = requestArgs;
         }
+
+        public IParameter Get(string name)
+        {
+            return RequestArgs.Request.Parameters.Get(name);
+        }
     }
 }

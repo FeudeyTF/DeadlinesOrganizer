@@ -1,9 +1,6 @@
 ﻿using DeadlineOrganizerBackend.API;
 using DeadlineOrganizerBackend.Rest;
-using DeadlineOrganizerBackend.Rest.Attributes;
 using System.Net;
-using System.Text.Json;
-using System.Text;
 
 namespace DeadlineOrganizerBackend
 {
@@ -11,34 +8,41 @@ namespace DeadlineOrganizerBackend
     {
         public int Version => 1;
 
-        public List<RestCommand> GetRestCommands()
+        private readonly List<RestEndpoint> _commands;
+
+        public RestAPI()
         {
-            return new List<RestCommand>
+            _commands = 
+            [
+                new RestEndpoint("GetDeadlines", "Gets all deadlines", HttpMethodType.Get, "deadlines", GetDeadlines),
+                new RestEndpoint("AddDeadline", "Adds deadline", HttpMethodType.Post, "deadline", AddDeadline),
+            ];
+        }
+
+        public List<RestEndpoint> GetRestEndpoints()
+            => _commands;
+
+        private static RestResponse AddDeadline(RestEventArgs args)
+        {
+            var token = args.Get("token").Value;
+            if (token != Program.Config.Token)
+                return new RestErrorResponse(HttpStatusCode.Unauthorized, "Invalid token!");
+
+            var courseName = args.Get("courseName").Value;
+            var taskName = args.Get("taskName").Value;
+            var timeToDo = int.Parse(args.Get("timeToDo").Value);
+            var priority = Enum.Parse<Priority>(args.Get("priority").Value);
+            var createdDate = args.Get("createdDate").Value.ToDate();
+            var endDate = args.Get("endDate").Value.ToDate();
+            var tags = args.Get("tags").Value;
+
+            var result = Program.Deadlines.Add(courseName, taskName, timeToDo, priority, createdDate, endDate, []);
+            return new RestResponse(HttpStatusCode.OK)
             {
-                new RestCommand("GetDeadlines", "Gets all deadlines", HttpMethodType.Get, "/deadlines", GetDeadlines),
-                new RestCommand("AddDeadline", "Adds deadline", HttpMethodType.Post, "/deadlines", AddDeadline),
+                { "deadline", result.ToRestResponse() }
             };
         }
 
-
-        [RestMethod(HttpMethodType.Post)]
-        [RestRoute("deadlines")]
-        private static RestResponse AddDeadline(RestEventArgs args)
-        {
-            var body = new byte[args.RequestArgs.Request.Body.Length];
-            args.RequestArgs.Request.Body.ReadExactly(body);
-            var str = Encoding.UTF8.GetString(body);
-            var deadline = JsonSerializer.Deserialize<Deadline>(str);
-            if (deadline != null)
-            {
-                //Program.Deadlines.Add(deadline.CourseName, deadline.TaskName, deadline);
-                return new RestResponse(HttpStatusCode.OK);
-            }
-            return new RestResponse(HttpStatusCode.BadRequest);
-        }
-
-        [RestMethod(HttpMethodType.Get)]
-        [RestRoute("deadlines")]
         private static RestResponse GetDeadlines(RestEventArgs args)
         {
             return new RestResponse(HttpStatusCode.OK)

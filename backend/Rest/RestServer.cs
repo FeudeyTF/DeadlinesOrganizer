@@ -11,10 +11,21 @@ namespace DeadlineOrganizerBackend.Rest
 
         private readonly HttpListener _server;
 
+        private readonly ContentTypeHeader _responseContentTypeHeader;
+
+        private readonly List<IHeader> _responseHeaders;
+
         public RestServer(IPAddress ip, int port)
         {
             _versions = [];
             _server = HttpListener.Create(ip, port);
+            _responseContentTypeHeader = new ContentTypeHeader("application/json; charset=utf-8");
+            _responseHeaders = 
+            [
+                new StringHeader("Access-Control-Allow-Origin", "*"),
+                new StringHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"),
+                new StringHeader("Access-Control-Allow-Headers", "Content-Type")
+            ];
         }
 
         public void Start()
@@ -38,69 +49,86 @@ namespace DeadlineOrganizerBackend.Rest
 
         private void HandleRequestRecieved(object? sender, RequestEventArgs args)
         {
-            args.Response.ContentType = new ContentTypeHeader("application/json; charset=utf-8");
-            args.Response.Add(new StringHeader("Access-Control-Allow-Origin", "*"));
-            args.Response.Add(new StringHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"));
-            args.Response.Add(new StringHeader("Access-Control-Allow-Headers", "Content-Type"));
+            args.Response.ContentType = _responseContentTypeHeader;
+            foreach(var header in _responseHeaders)
+                args.Response.Add(header);
+            args.Response.Reason = "";
 
-            Console.WriteLine($"GOT REQUEST {args.Context.Request.Uri} FROM " + args.Context.RemoteEndPoint);
-            if (args.Request.Uri.Segments.Length > 1)
+            Console.WriteLine($"HTTP {args.Context.RemoteEndPoint} {args.Request.Method} {args.Context.Request.Uri.AbsolutePath}");
+            var response = ProduceResponse(args.Request, new RestEventArgs(args));
+            var sendedString = args.SendResponse(response);
+            Console.WriteLine($"HTTP {args.Context.RemoteEndPoint} Returned {response.Status} {sendedString}");
+        }
+
+        private RestResponse ProduceResponse(IRequest request, RestEventArgs args)
+        {
+            if (request.Uri.Segments.Length > 1)
             {
-                var versionSegment = args.Request.Uri.Segments[1];
+                var versionSegment = request.Uri.Segments[1];
                 if (versionSegment.StartsWith('v'))
                 {
-                    if (int.TryParse(versionSegment[1..], out var version))
+                    if (int.TryParse(versionSegment[1..].Replace("/", ""), out var version))
                     {
-                        if(_versions.TryGetValue(version, out var restVersion))
+                        if (_versions.TryGetValue(version, out var restVersion))
                         {
-                            if (args.Request.Uri.Segments.Length > 2)
+                            if (request.Uri.Segments.Length > 2)
                             {
-                                var fullRoute = string.Join("/", args.Request.Uri.Segments[2..]);
-                                foreach (var command in restVersion.GetRestCommands())
+                                var fullRoute = string.Join("/", request.Uri.Segments[2..]);
+                                if (Enum.TryParse<HttpMethodType>(request.Method, true, out var method))
                                 {
-                                    if (command.Route == fullRoute)
+                                    foreach (var command in restVersion.GetRestEndpoints())
                                     {
-                                        var response = command.Delegate(new RestEventArgs(args));
-                                        var sendedString = args.SendResponse(response);
-                                        Console.WriteLine("SENDING " + sendedString + " WITH STATUS " + response.Status);
-                                        return;
+                                        if ((command.Route == fullRoute || command.Route + '/' == fullRoute) && command.Method == method)
+                                            return command.Delegate(args);
                                     }
+
+                                    return new RestErrorResponse
+                                    (
+                                        HttpStatusCode.NotFound,
+                                        $"RestCommand was not found in RestAPI v.{restVersion.Version}!"
+                                    );
                                 }
-                                args.SendResponse(new RestResponse(HttpStatusCode.NotFound)
-                                {
-                                    Error = $"RestCommand was not found in RestAPI v.{restVersion.Version}!"
-                                });
+                                else
+                                    return new RestErrorResponse
+                                     (
+                                        HttpStatusCode.HttpVersionNotSupported,
+                                        $"HTTP Method {request.Method} not supported!"
+                                     );
                             }
                             else
-                                args.SendResponse(new RestResponse(HttpStatusCode.LengthRequired)
-                                {
-                                    Error = "Invalid length of endpoint!"
-                                });
-
+                                return new RestErrorResponse
+                                 (
+                                    HttpStatusCode.HttpVersionNotSupported,
+                                    "RestAPI only version not supported!"
+                                 );
                         }
                         else
-                            args.SendResponse(new RestResponse(HttpStatusCode.NotFound)
-                            {
-                                Error = $"RestAPI v.{version} not found!"
-                            });
+                            return new RestErrorResponse
+                            (
+                                HttpStatusCode.NotFound,
+                                $"RestAPI v.{version} not found!"
+                            );
                     }
                     else
-                        args.SendResponse(new RestResponse(HttpStatusCode.UnprocessableEntity)
-                        {
-                            Error = "RestAPI Version must be a number!"
-                        });
+                        return new RestErrorResponse
+                        (
+                            HttpStatusCode.UnprocessableEntity, 
+                            "RestAPI Version must be a number!"
+                        );
                 }
                 else
-                    args.SendResponse(new RestResponse(HttpStatusCode.NotFound)
-                    {
-                        Error = "RestAPI Version parameter was not found!"
-                    });
+                    return new RestErrorResponse
+                    (
+                        HttpStatusCode.NotFound,
+                        "RestAPI Version parameter was not found!"
+                    );
             }
             else
-                args.SendResponse(new RestResponse(HttpStatusCode.LengthRequired)
-                {
-                    Error = "Invalid length!"
-                });
+                return new RestErrorResponse
+                (
+                    HttpStatusCode.LengthRequired,
+                    "Invalid length!"
+                );
         }
 
         public void Dispose()

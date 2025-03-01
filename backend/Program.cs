@@ -9,16 +9,17 @@ namespace DeadlineOrganizerBackend
         public static readonly IPAddress IP;
 
         public static readonly int Port;
+
         public static DeadlinesManager Deadlines { get; private set; }
 
-        private static readonly ConfigFile _config;
+        public static ConfigFile Config { get; set; }
 
         private static readonly RestServer _server;
 
         static Program()
         {
-            _config = ConfigFile.Load("config");
-            if (IPAddress.TryParse(_config.ServerIP, out var parsedIp))
+            Config = ConfigFile.Load("config");
+            if (IPAddress.TryParse(Config.ServerIP, out var parsedIp))
                 IP = parsedIp;
             else
             {
@@ -26,7 +27,7 @@ namespace DeadlineOrganizerBackend
                 Console.WriteLine("Can't parse config IP address. Using default: " + IP);
             }
             Deadlines = new([]);
-            Port = _config.Port;
+            Port = Config.Port;
             _server = new(IP, Port);
             _server.AddVersion(new RestAPI());
         }
@@ -37,7 +38,7 @@ namespace DeadlineOrganizerBackend
             
             Deadlines.Add("test", "test123", 1, Priority.High, DateTime.Now.AddDays(-10), DateTime.Now.AddDays(10), []);
 
-            Console.WriteLine($"Http Server started at {IP}:{Port}");
+            Console.WriteLine($"REST Server started at {IP}:{Port}");
             while (true)
             {
                 var command = Console.ReadLine();

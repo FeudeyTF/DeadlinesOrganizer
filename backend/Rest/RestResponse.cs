@@ -58,4 +58,13 @@ namespace DeadlineOrganizerBackend.Rest
             }
         }
     }
+
+    public class RestErrorResponse : RestResponse
+    {
+        public RestErrorResponse(HttpStatusCode status, string error)
+        {
+            Status = status;
+            Error = error;
+        }
+    }
 }

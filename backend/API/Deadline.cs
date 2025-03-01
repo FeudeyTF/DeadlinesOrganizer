@@ -42,8 +42,8 @@ namespace DeadlineOrganizerBackend.API
                 ["taskName"] = TaskName,
                 ["timeToDo"] = TimeToDo,
                 ["priority"] = Priority,
-                ["createdDate"] = CreatedDate.ToAPI(),
-                ["endDate"] = EndDate.ToAPI(),
+                ["createdDate"] = CreatedDate.ToApiFormat(),
+                ["endDate"] = EndDate.ToApiFormat(),
                 ["tags"] = Tags
             };
             return response;

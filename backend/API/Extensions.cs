@@ -7,7 +7,7 @@ namespace DeadlineOrganizerBackend.API
         public static DateTime ToDate(this string? str)
             => DateTimeConverter.StringToDate(str);
 
-        public static string ToAPI(this DateTime date)
+        public static string ToApiFormat(this DateTime date)
             => DateTimeConverter.DateToString(date);
     }
 }
