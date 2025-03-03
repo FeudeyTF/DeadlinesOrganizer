@@ -10,7 +10,7 @@ export class TagsManager {
   }
 
   private async loadTags() {
-    this.tags = await ApiService.fetchTags();
+    this.tags = (await ApiService.fetchTags()).tags;
   }
 
   async addTag(tag: Tag) {

@@ -1,32 +1,41 @@
 import { Deadline, Tag } from "../common/types";
 
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = "http://localhost:3001/v1";
 
-const fetchOptions = {
-  headers: {
-    "Content-Type": "application/json",
-  },
+type RestApiResponse = {
+  status: number;
 };
 
+type GetDeadlinesResponse = {
+  deadlines: Deadline[];
+} & RestApiResponse;
+
+type GetTagsResponse = {
+  tags: Tag[];
+} & RestApiResponse;
+
 export class ApiService {
-  private static async fetchJson<T>(url: string, options = {}): Promise<T> {
-    const response = await fetch(url, { ...fetchOptions, ...options });
-    if (!response.ok) {
+  private static async fetchJson<T>(
+    url: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const response = await fetch(url, options);
+    if (response.status !== 200) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response.json();
   }
 
-  static async fetchDeadlines(): Promise<Deadline[]> {
-    return this.fetchJson<Deadline[]>(`${API_BASE_URL}/deadlines`);
+  static async fetchDeadlines(): Promise<GetDeadlinesResponse> {
+    return this.fetchJson<GetDeadlinesResponse>(`${API_BASE_URL}/deadlines`, {
+      method: "GET",
+    });
   }
 
-  static async createDeadline(
-    deadline: Deadline
-  ): Promise<Deadline> {
+  static async createDeadline(deadline: Deadline): Promise<Deadline> {
     return this.fetchJson<Deadline>(`${API_BASE_URL}/deadlines`, {
       method: "POST",
-      body: JSON.stringify(deadline),
+      body: JSON.stringify({token: "test", ...deadline}),
     });
   }
 
@@ -46,8 +55,8 @@ export class ApiService {
     });
   }
 
-  static async fetchTags(): Promise<Tag[]> {
-    return this.fetchJson<Tag[]>(`${API_BASE_URL}/tags`);
+  static async fetchTags(): Promise<GetTagsResponse> {
+    return this.fetchJson<GetTagsResponse>(`${API_BASE_URL}/tags`);
   }
 
   static async createTag(tag: Omit<Tag, "id">): Promise<Tag> {

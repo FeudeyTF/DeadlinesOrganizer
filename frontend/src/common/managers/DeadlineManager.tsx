@@ -18,7 +18,7 @@ export class DeadlineManager {
   }
 
   private async loadDeadlines() {
-    this.deadlines = await ApiService.fetchDeadlines();
+    this.deadlines = (await ApiService.fetchDeadlines()).deadlines;
   }
 
   async addDeadline(deadline: Deadline) {

@@ -23,7 +23,7 @@ namespace DeadlineOrganizerBackend.Rest
             _responseHeaders =
             [
                 new StringHeader("Access-Control-Allow-Origin", "*"),
-                new StringHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"),
+                new StringHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"),
                 new StringHeader("Access-Control-Allow-Headers", "Content-Type")
             ];
         }

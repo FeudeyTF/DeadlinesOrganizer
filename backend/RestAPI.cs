@@ -1,6 +1,7 @@
 ﻿using DeadlineOrganizerBackend.API;
 using DeadlineOrganizerBackend.Rest;
 using System.Net;
+using System.Text.Json;
 
 namespace DeadlineOrganizerBackend
 {
@@ -15,7 +16,8 @@ namespace DeadlineOrganizerBackend
             _commands =
             [
                 new RestEndpoint("GetDeadlines", "Gets all deadlines", HttpMethodType.Get, "deadlines", GetDeadlines),
-                new RestEndpoint("AddDeadline", "Adds deadline", HttpMethodType.Post, "deadline", AddDeadline),
+                new RestEndpoint("GetTags", "Gets all tags", HttpMethodType.Get, "tags", GetTags),
+                new RestEndpoint("AddDeadline", "Adds deadline", HttpMethodType.Post, "deadlines", AddDeadline),
             ];
         }
 
@@ -34,12 +36,20 @@ namespace DeadlineOrganizerBackend
             var priority = Enum.Parse<Priority>(args.Get("priority").Value);
             var createdDate = args.Get("createdDate").Value.ToDate();
             var endDate = args.Get("endDate").Value.ToDate();
-            var tags = args.Get("tags").Value;
+            var tags = JsonSerializer.Deserialize<List<Tag>>(args.Get("tags").Value) ?? [];
 
-            var result = Program.Deadlines.Add(courseName, taskName, timeToDo, priority, createdDate, endDate, []);
+            var result = Program.Deadlines.Add(courseName, taskName, timeToDo, priority, createdDate, endDate, tags);
             return new RestResponse()
             {
                 { "deadline", result.ToRestResponse() }
+            };
+        }
+
+        private RestResponse GetTags(RestEventArgs args)
+        {
+            return new RestResponse()
+            {
+                ["tags"] = Array.Empty<Tag>()
             };
         }
 
