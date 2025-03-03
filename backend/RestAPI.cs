@@ -4,13 +4,13 @@ using System.Net;
 
 namespace DeadlineOrganizerBackend
 {
-    internal class RestAPI : IRestVersion
+    internal class RestApi : IRestVersion
     {
         public int Version => 1;
 
         private readonly List<RestEndpoint> _commands;
 
-        public RestAPI()
+        public RestApi()
         {
             _commands = 
             [
@@ -37,7 +37,7 @@ namespace DeadlineOrganizerBackend
             var tags = args.Get("tags").Value;
 
             var result = Program.Deadlines.Add(courseName, taskName, timeToDo, priority, createdDate, endDate, []);
-            return new RestResponse(HttpStatusCode.OK)
+            return new RestResponse()
             {
                 { "deadline", result.ToRestResponse() }
             };
@@ -45,7 +45,7 @@ namespace DeadlineOrganizerBackend
 
         private static RestResponse GetDeadlines(RestEventArgs args)
         {
-            return new RestResponse(HttpStatusCode.OK)
+            return new RestResponse()
             {
                 ["deadlines"] = Program.Deadlines.Deadlines.Select(x => x.ToRestResponse())
             };

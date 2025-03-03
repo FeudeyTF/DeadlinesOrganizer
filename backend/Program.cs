@@ -26,10 +26,10 @@ namespace DeadlineOrganizerBackend
                 IP = IPAddress.Loopback;
                 Console.WriteLine("Can't parse config IP address. Using default: " + IP);
             }
-            Deadlines = new([]);
+            Deadlines = new DeadlinesManager([]);
             Port = Config.Port;
-            _server = new(IP, Port);
-            _server.AddVersion(new RestAPI());
+            _server = new RestServer(IP, Port);
+            _server.AddVersion(new RestApi());
         }
 
         private static void Main(string[] args)

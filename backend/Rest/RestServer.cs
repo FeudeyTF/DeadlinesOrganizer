@@ -30,24 +30,22 @@ namespace DeadlineOrganizerBackend.Rest
 
         public void Start()
         {
-            _server.RequestReceived += HandleRequestRecieved;
+            _server.RequestReceived += HandleRequestReceived;
             _server.Start(int.MaxValue);
         }
 
         public void Stop()
         {
-            _server.RequestReceived -= HandleRequestRecieved;
+            _server.RequestReceived -= HandleRequestReceived;
             _server.Stop();
         }
 
         public void AddVersion(IRestVersion version)
         {
-            if(_versions.ContainsKey(version.Version))
-                return;
-            _versions.Add(version.Version, version);
+            _versions.TryAdd(version.Version, version);
         }
 
-        private void HandleRequestRecieved(object? sender, RequestEventArgs args)
+        private void HandleRequestReceived(object? sender, RequestEventArgs args)
         {
             args.Response.ContentType = _responseContentTypeHeader;
             foreach(var header in _responseHeaders)
@@ -56,8 +54,8 @@ namespace DeadlineOrganizerBackend.Rest
 
             Console.WriteLine($"HTTP {args.Context.RemoteEndPoint} {args.Request.Method} {args.Context.Request.Uri.AbsolutePath}");
             var response = ProduceResponse(args.Request, new RestEventArgs(args));
-            var sendedString = args.SendResponse(response);
-            Console.WriteLine($"HTTP {args.Context.RemoteEndPoint} Returned {response.Status} {sendedString}");
+            var sendResponse = args.SendResponse(response);
+            Console.WriteLine($"HTTP {args.Context.RemoteEndPoint} Returned {response.Status} {sendResponse}");
         }
 
         private RestResponse ProduceResponse(IRequest request, RestEventArgs args)
@@ -85,7 +83,7 @@ namespace DeadlineOrganizerBackend.Rest
                                     return new RestErrorResponse
                                     (
                                         HttpStatusCode.NotFound,
-                                        $"RestCommand was not found in RestAPI v.{restVersion.Version}!"
+                                        $"RestCommand was not found in RestApi v.{restVersion.Version}!"
                                     );
                                 }
                                 else
@@ -99,28 +97,28 @@ namespace DeadlineOrganizerBackend.Rest
                                 return new RestErrorResponse
                                  (
                                     HttpStatusCode.HttpVersionNotSupported,
-                                    "RestAPI only version not supported!"
+                                    "RestApi only version not supported!"
                                  );
                         }
                         else
                             return new RestErrorResponse
                             (
                                 HttpStatusCode.NotFound,
-                                $"RestAPI v.{version} not found!"
+                                $"RestApi v.{version} not found!"
                             );
                     }
                     else
                         return new RestErrorResponse
                         (
                             HttpStatusCode.UnprocessableEntity, 
-                            "RestAPI Version must be a number!"
+                            "RestApi Version must be a number!"
                         );
                 }
                 else
                     return new RestErrorResponse
                     (
                         HttpStatusCode.NotFound,
-                        "RestAPI Version parameter was not found!"
+                        "RestApi Version parameter was not found!"
                     );
             }
             else
