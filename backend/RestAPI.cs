@@ -12,7 +12,7 @@ namespace DeadlineOrganizerBackend
 
         public RestApi()
         {
-            _commands = 
+            _commands =
             [
                 new RestEndpoint("GetDeadlines", "Gets all deadlines", HttpMethodType.Get, "deadlines", GetDeadlines),
                 new RestEndpoint("AddDeadline", "Adds deadline", HttpMethodType.Post, "deadline", AddDeadline),

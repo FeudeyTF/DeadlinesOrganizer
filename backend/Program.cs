@@ -35,7 +35,7 @@ namespace DeadlineOrganizerBackend
         private static void Main(string[] args)
         {
             _server.Start();
-            
+
             Deadlines.Add("test", "test123", 1, Priority.High, DateTime.Now.AddDays(-10), DateTime.Now.AddDays(10), []);
 
             Console.WriteLine($"REST Server started at {IP}:{Port}");

@@ -5,5 +5,5 @@
         public int Version { get; }
 
         public List<RestEndpoint> GetRestEndpoints();
-    } 
+    }
 }

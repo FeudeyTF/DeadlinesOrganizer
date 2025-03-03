@@ -20,7 +20,7 @@ namespace DeadlineOrganizerBackend.Rest
             _versions = [];
             _server = HttpListener.Create(ip, port);
             _responseContentTypeHeader = new ContentTypeHeader("application/json; charset=utf-8");
-            _responseHeaders = 
+            _responseHeaders =
             [
                 new StringHeader("Access-Control-Allow-Origin", "*"),
                 new StringHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"),
@@ -48,7 +48,7 @@ namespace DeadlineOrganizerBackend.Rest
         private void HandleRequestReceived(object? sender, RequestEventArgs args)
         {
             args.Response.ContentType = _responseContentTypeHeader;
-            foreach(var header in _responseHeaders)
+            foreach (var header in _responseHeaders)
                 args.Response.Add(header);
             args.Response.Reason = "";
 
@@ -110,7 +110,7 @@ namespace DeadlineOrganizerBackend.Rest
                     else
                         return new RestErrorResponse
                         (
-                            HttpStatusCode.UnprocessableEntity, 
+                            HttpStatusCode.UnprocessableEntity,
                             "RestApi Version must be a number!"
                         );
                 }

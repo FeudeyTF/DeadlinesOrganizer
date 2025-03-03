@@ -4,7 +4,7 @@
     {
         public string Route;
 
-        public RestRouteAttribute(string route) 
+        public RestRouteAttribute(string route)
         {
             Route = route;
         }

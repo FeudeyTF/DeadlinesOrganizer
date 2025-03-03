@@ -1,5 +1,4 @@
 ﻿using DeadlineOrganizerBackend.Rest;
-using System.Net;
 
 namespace DeadlineOrganizerBackend.API
 {
@@ -35,7 +34,7 @@ namespace DeadlineOrganizerBackend.API
 
         public RestResponse ToRestResponse()
         {
-            RestResponse response = new(HttpStatusCode.OK)
+            RestResponse response = new()
             {
                 ["id"] = Id,
                 ["courseName"] = CourseName,

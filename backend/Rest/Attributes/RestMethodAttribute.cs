@@ -4,7 +4,7 @@
     {
         public HttpMethodType Method;
 
-        public RestMethodAttribute(HttpMethodType method) 
+        public RestMethodAttribute(HttpMethodType method)
         {
             Method = method;
         }
