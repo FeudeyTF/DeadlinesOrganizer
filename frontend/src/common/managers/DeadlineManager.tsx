@@ -1,9 +1,12 @@
 import { Deadline } from "../types";
 import { ApiService } from "../../services/api";
 
+type DeadlinesChangeListener = (deadlines: Deadline[]) => void;
+
 export class DeadlineManager {
   deadlines: Deadline[];
   private static instance: DeadlineManager | null = null;
+  private listeners: DeadlinesChangeListener[] = [];
 
   private constructor() {
     this.deadlines = [];
@@ -23,8 +26,11 @@ export class DeadlineManager {
 
   async addDeadline(deadline: Deadline) {
     const newDeadline = await ApiService.createDeadline(deadline);
-    this.deadlines.push(newDeadline);
-    console.log(this.deadlines);
+    console.log(newDeadline);
+    if(newDeadline != null) {
+      this.deadlines.push(newDeadline);
+      this.notifyListeners();
+    }
   }
 
   async updateDeadline(id: number, updatedDeadline: Deadline) {
@@ -32,12 +38,14 @@ export class DeadlineManager {
     const index = this.deadlines.findIndex((d) => d.id === id);
     if (index !== -1) {
       this.deadlines[index] = updated;
+      this.notifyListeners();
     }
   }
 
   async deleteDeadline(id: number) {
     await ApiService.deleteDeadline(id);
     this.deadlines = this.deadlines.filter((d) => d.id !== id);
+    this.notifyListeners();
   }
 
   getDeadlinesForDate(date: Date) {
@@ -57,5 +65,19 @@ export class DeadlineManager {
       const dateB = new Date(b.endDate);
       return dateA.getTime() - dateB.getTime();
     });
+  }
+
+  addChangeListener(listener: DeadlinesChangeListener) {
+    this.listeners.push(listener);
+  }
+
+  removeChangeListener(listener: DeadlinesChangeListener) {
+    this.listeners = this.listeners.filter(l => l !== listener);
+  }
+
+  private notifyListeners() {
+    for (const listener of this.listeners) {
+      listener([...this.deadlines]);
+    }
   }
 }

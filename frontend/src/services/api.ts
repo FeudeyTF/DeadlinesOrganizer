@@ -2,6 +2,8 @@ import { Deadline, Tag } from "../common/types";
 
 const API_BASE_URL = "http://localhost:3001/v1";
 
+const Token = "12345";
+
 type RestApiResponse = {
   status: number;
 };
@@ -33,24 +35,26 @@ export class ApiService {
   }
 
   static async createDeadline(deadline: Deadline): Promise<Deadline> {
-    return this.fetchJson<Deadline>(`${API_BASE_URL}/deadlines`, {
+    var response =  this.fetchJson<Deadline>(`${API_BASE_URL}/deadlines?token=${Token}`, {
       method: "POST",
-      body: JSON.stringify({token: "test", ...deadline}),
+      body: JSON.stringify(deadline),
     });
+    return response;
+
   }
 
   static async updateDeadline(
     id: number,
     deadline: Partial<Deadline>
   ): Promise<Deadline> {
-    return this.fetchJson<Deadline>(`${API_BASE_URL}/deadlines/${id}`, {
+    return this.fetchJson<Deadline>(`${API_BASE_URL}/deadlines?token=${Token}&id=${id}`, {
       method: "PUT",
       body: JSON.stringify(deadline),
     });
   }
 
   static async deleteDeadline(id: number): Promise<void> {
-    await this.fetchJson<void>(`${API_BASE_URL}/deadlines/${id}`, {
+    await this.fetchJson<void>(`${API_BASE_URL}/deadlines?token=${Token}&id=${id}`, {
       method: "DELETE",
     });
   }
@@ -60,14 +64,14 @@ export class ApiService {
   }
 
   static async createTag(tag: Omit<Tag, "id">): Promise<Tag> {
-    return this.fetchJson<Tag>(`${API_BASE_URL}/tags`, {
+    return this.fetchJson<Tag>(`${API_BASE_URL}/tags?token=${Token}`, {
       method: "POST",
       body: JSON.stringify(tag),
     });
   }
 
   static async deleteTag(id: number): Promise<void> {
-    await this.fetchJson<void>(`${API_BASE_URL}/tags/${id}`, {
+    await this.fetchJson<void>(`${API_BASE_URL}/tags?token=${Token}&id=${id}`, {
       method: "DELETE",
     });
   }

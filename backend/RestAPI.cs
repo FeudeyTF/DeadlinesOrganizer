@@ -1,7 +1,7 @@
 ﻿using DeadlineOrganizerBackend.API;
 using DeadlineOrganizerBackend.Rest;
+using Newtonsoft.Json;
 using System.Net;
-using System.Text.Json;
 
 namespace DeadlineOrganizerBackend
 {
@@ -24,25 +24,22 @@ namespace DeadlineOrganizerBackend
         public List<RestEndpoint> GetRestEndpoints()
             => _commands;
 
-        private static RestResponse AddDeadline(RestEventArgs args)
+        private RestResponse AddDeadline(RestEventArgs args)
         {
             var token = args.Get("token").Value;
             if (token != Program.Config.Token)
                 return new RestErrorResponse(HttpStatusCode.Unauthorized, "Invalid token!");
 
-            var courseName = args.Get("courseName").Value;
-            var taskName = args.Get("taskName").Value;
-            var timeToDo = int.Parse(args.Get("timeToDo").Value);
-            var priority = Enum.Parse<Priority>(args.Get("priority").Value);
-            var createdDate = args.Get("createdDate").Value.ToDate();
-            var endDate = args.Get("endDate").Value.ToDate();
-            var tags = JsonSerializer.Deserialize<List<Tag>>(args.Get("tags").Value) ?? [];
-
-            var result = Program.Deadlines.Add(courseName, taskName, timeToDo, priority, createdDate, endDate, tags);
-            return new RestResponse()
+            var deadline = JsonConvert.DeserializeObject<Deadline>(args.Body);
+            if (deadline != null)
             {
-                { "deadline", result.ToRestResponse() }
-            };
+                var result = Program.Deadlines.Add(deadline.CourseName, deadline.TaskName, deadline.TimeToDo, deadline.Priority, deadline.CreatedDate, deadline.EndDate, deadline.Tags);
+                return new RestResponse()
+                {
+                    { "deadline", result.ToRestResponse() }
+                };
+            }
+            return new RestErrorResponse(HttpStatusCode.ExpectationFailed, "Invalid Deadline type!");
         }
 
         private RestResponse GetTags(RestEventArgs args)
@@ -53,7 +50,7 @@ namespace DeadlineOrganizerBackend
             };
         }
 
-        private static RestResponse GetDeadlines(RestEventArgs args)
+        private RestResponse GetDeadlines(RestEventArgs args)
         {
             return new RestResponse()
             {

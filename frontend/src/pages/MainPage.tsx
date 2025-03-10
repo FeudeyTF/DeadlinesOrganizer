@@ -49,8 +49,18 @@ export default function MainPage() {
     const initializeManager = async () => {
       const manager = await DeadlineManager.getInstance();
       setDeadlineManager(manager);
-      setDeadlines(manager.deadlines);
+      setDeadlines([...manager.deadlines]);
+      const handleDeadlinesChange = (updatedDeadlines: Deadline[]) => {
+        setDeadlines(updatedDeadlines);
+      };
+      
+      manager.addChangeListener(handleDeadlinesChange);
+      
+      return () => {
+        manager.removeChangeListener(handleDeadlinesChange);
+      };
     };
+    
     initializeManager();
   }, []);
 
@@ -88,7 +98,6 @@ export default function MainPage() {
   function closeEditDeadlineModal(deadline: Deadline | null) {
     if ( deadlineManager && editingDeadline && deadline) {
       deadlineManager.updateDeadline(editingDeadline.id, deadline);
-      setDeadlines([...deadlineManager.deadlines]);
     }
     setEditingDeadline(null);
   }
@@ -100,7 +109,6 @@ export default function MainPage() {
   function closeAddDeadlineModal(deadline: Deadline | null) {
     if (deadlineManager && deadline) {
       deadlineManager.addDeadline(deadline);
-      setDeadlines([...deadlineManager.deadlines]);
     }
     setIsAddModalOpen(false);
   }
@@ -121,7 +129,6 @@ export default function MainPage() {
   }
 
   function handleTagDelete(tag: Tag) {
-    console.log(tag);
     tagsManager.deleteTag(tag.id);
     setTags([...tagsManager.tags]);
   }
@@ -222,7 +229,6 @@ export default function MainPage() {
                       circle
                       onClick={() => {
                         deadlineManager.deleteDeadline(deadline.id);
-                        setDeadlines([...deadlineManager.deadlines]);
                       }}
                     />,
                     <Button
@@ -260,7 +266,6 @@ export default function MainPage() {
                       circle
                       onClick={() => {
                         deadlineManager.deleteDeadline(deadline.id);
-                        setDeadlines([...deadlineManager.deadlines]);
                       }}
                     />,
                     <Button
